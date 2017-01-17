@@ -1,0 +1,58 @@
+#!sh Model parameters
+# Continuous equation parameters
+ &PARM01
+ tRef=20.,
+ sRef=10.,
+# viscAz=1.E-2,
+ viscAh=200,
+ f0=2.53E-5, 
+ beta=2.2e-11, 
+ gravity=9.8,
+ gBaro=9.8,
+# gravity=1.8e-2,
+# gBaro=1.8e-2,
+ rigidLid=.FALSE.,
+ implicitFreeSurface=.TRUE.,
+ no_slip_sides=.FALSE.,
+ no_slip_bottom=.FALSE.,
+ eosType='LINEAR',
+ readBinaryPrec=32,
+ hFacMin=0.5,
+ tempAdvection=.FALSE.,
+ saltAdvection=.FALSE.,
+# vectorInvariantMomentum=.TRUE.,
+# useStrainTensionVisc=.TRUE.,
+# implicitViscosity = .FALSE.,
+# highOrderVorticity=.TRUE.,
+ &
+# Elliptic solver parameters
+ &PARM02
+ cg2dMaxIters=2000,
+ cg2dTargetResidual=1.E-7,
+ &
+# Time stepping parameters
+ &PARM03
+ startTime=0,
+# 60 days
+ endTime=5184000,
+ deltaT=600.0,
+ abEps=0.1,
+ pChkptFreq=0.0,
+ chkptFreq=0.0,
+ dumpFreq=86400,
+ monitorFreq=86400.,
+ &
+# Gridding parameters
+ &PARM04
+ usingCartesianGrid=.TRUE.,
+ delXfile='dx.box',
+ delYfile='dy.box',
+ delrfile='dz.box',
+ &
+ &PARM05
+ bathyFile='topo.box',
+ uVelInitFile='uinit.box',
+ vVelInitFile='vinit.box',
+ pSurfInitFile='einit.box',
+ & 
+

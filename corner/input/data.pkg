@@ -1,0 +1,5 @@
+#!sh Packages
+ &PACKAGES
+ useMNC=.TRUE.,
+ useDIAGNOSTICS=.TRUE.,
+ &
