@@ -1,2 +1,6 @@
 # binary files
-.box
+*.box
+
+# build and run directories
+*/build/*
+*/run/*
