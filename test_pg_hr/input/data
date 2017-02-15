@@ -1,0 +1,76 @@
+#!/bin/sh ====================
+# | Model parameters |
+# ====================
+#
+# Continuous equation parameters
+ &PARM01
+# sRefFile='sref.box',
+ tRefFile='tref.box',
+ viscAh=100.E0,
+ viscA4=5.E9,
+ viscAz=1.E-5,
+ no_slip_sides=.TRUE.,
+ no_slip_bottom=.TRUE.,
+ diffKhT=100.E0,
+ diffKzT=1.E-5,
+# corimap = 0 -> fplane
+ f0=4.5e-5,
+ beta=1.83E-11,
+ eosType='LINEAR',
+ tAlpha=2.E-4,
+ sBeta =0.E-4,
+ rigidLid=.TRUE.,
+ implicitFreeSurface=.FALSE.,
+ hFacMin=0.0,
+ nonHydrostatic=.FALSE.,
+ readBinaryPrec=64,
+ tempAdvScheme=33,
+ staggerTimeStep=.TRUE.
+ implicitDiffusion=.TRUE.,
+ implicitviscosity=.TRUE.,
+ saltStepping=.FALSE.,
+# momAdvection=.FALSE.,
+ &
+
+# Elliptic solver parameters
+ &PARM02
+ cg2dMaxIters=1000,
+ cg2dTargetResidual=1.E-12,
+ cg3dMaxIters=1000,
+ cg3dTargetResidual=1.E-12,
+ &
+
+# Time stepping parameters
+ &PARM03
+ nIter0=0,
+ endTime=864000000,
+ deltaT=360.0,
+ abEps=0.01,
+ pChkptFreq=0.0,
+ chkptFreq=0.0,
+ dumpFreq=2592000,
+ taveFreq=0,
+ monitorSelect=2,
+ monitorFreq=2592000.,
+ tauThetaClimRelax=2922857.,
+ &
+
+# Gridding parameters
+ &PARM04
+ usingCartesianGrid=.TRUE.,
+ delXfile='dx.box',
+ delYfile='dy.box',
+ delRFile='dz.box',
+ &
+ 
+# Input datasets
+ &PARM05
+ bathyFile='topog.box',
+ hydrogThetaFile='tinit.box',
+ uVelInitFile='uinit.box',
+ vVelInitFile='vinit.box',
+ pSurfInitFile='einit.box',
+ zonalwindfile='windx.box',
+ thetaClimFile='sstclim.box'
+# surfQfile='Qnet.forcing',
+ &
