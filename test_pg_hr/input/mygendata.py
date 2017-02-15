@@ -112,6 +112,9 @@ fmid = 0.5*(fMin + fMax)
 beta = (fMax-fMin)/Ly
 ff   = np.linspace(fMin,fMax,si_y)
 
+print('f_south = {0}; beta = {1}'.format(fMin,beta) )
+
+
 #%==================== LAND ===================================
 
 landh  = np.zeros((si_y,si_x));

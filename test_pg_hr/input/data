@@ -14,8 +14,8 @@
  diffKhT=100.E0,
  diffKzT=1.E-5,
 # corimap = 0 -> fplane
- f0=4.5e-5,
- beta=1.83E-11,
+ f0=3.78e-5,
+ beta=1.84E-11,
  eosType='LINEAR',
  tAlpha=2.E-4,
  sBeta =0.E-4,
