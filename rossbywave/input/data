@@ -1,0 +1,63 @@
+#!sh Model parameters
+# Continuous equation parameters
+ &PARM01
+ tRef=20.,
+ sRef=10.,
+ viscAz=1.E-2,
+ viscAh=4.E2,
+ diffKhT=4.E2,
+ diffKzT=1.E-2,
+# beta=1.E-11,
+ tAlpha=2.E-4,
+ sBeta =0.,
+ gravity=0.01,
+ gBaro=0.01,
+ rigidLid=.FALSE.,
+ implicitFreeSurface=.TRUE.,
+ eosType='LINEAR',
+ readBinaryPrec=32,
+ saltStepping=.FALSE,
+ tempStepping=.FALSE,
+ &
+
+# Elliptic solver parameters
+ &PARM02
+ cg2dMaxIters=1000,
+ cg2dTargetResidual=1.E-7,
+ &
+
+# Time stepping parameters
+ &PARM03
+ startTime=0,
+ endTime=311040000,
+ deltaTmom=3600.0,
+ abEps=0.1,
+ pChkptFreq=0.0,
+ chkptFreq=0.0,
+ dumpFreq=2592000.0,
+ monitorSelect=2,
+ monitorFreq=864000.,
+ periodicExternalForcing=.TRUE.,
+ externForcingPeriod=15768000.0,
+ externForcingCycle=31536000,
+ &
+
+# Gridding parameters
+ &PARM04
+# usingCartesianGrid=.TRUE.,
+ usingSphericalPolarGrid=.TRUE.,
+ ygOrigin=15.0,
+ xgOrigin=-100.0,
+ delXfile='dx.box',
+ delYfile='dy.box',
+ delrfile='dz.box',
+ &
+
+# Input datasets
+ &PARM05
+ bathyFile='htopo.box',
+ hydrogThetaFile=,
+ hydrogSaltFile=,
+ zonalWindFile='windx.box',
+ meridWindFile=,
+ &
