@@ -1,0 +1,70 @@
+#!/bin/sh ====================
+# | Model parameters |
+# ====================
+#
+# Continuous equation parameters
+ &PARM01
+ tRefFile='tref.box',
+ viscAh=10.E0,
+ viscAz=1.E-2,
+ no_slip_sides=.FALSE.,
+ no_slip_bottom=.FALSE.,
+ diffKhT=10.E0,
+ diffKzT=0.E-2,
+# corimap = 0 -> fplane
+# selectCoriMap=0,
+ f0=1.0e-4,
+ beta=0.E-11,
+ eosType='LINEAR',
+ tAlpha=2.E-4,
+ sBeta =0.E-4,
+ rigidLid=.FALSE.,
+ implicitFreeSurface=.TRUE.,
+ hFacMin=0.1,
+ nonHydrostatic=.FALSE.,
+ readBinaryPrec=64,
+ tempAdvScheme=33,
+ staggerTimeStep=.TRUE.
+ implicitDiffusion=.TRUE.,
+ implicitviscosity=.TRUE.,
+ &
+
+# Elliptic solver parameters
+ &PARM02
+ cg2dMaxIters=500,
+ cg2dTargetResidual=1.E-13,
+ cg3dMaxIters=500,
+ cg3dTargetResidual=1.E-8,
+ &
+
+# Time stepping parameters
+ &PARM03
+ nIter0=0,
+# nTimeSteps=20,
+ endTime=8640000,
+ deltaT=300.0,
+ abEps=0.01,
+ pChkptFreq=0.0,
+ chkptFreq=0.0,
+ dumpFreq=86400.0,
+#taveFreq=864000.0,
+ monitorSelect=2,
+ monitorFreq=86400.,
+ &
+
+# Gridding parameters
+ &PARM04
+ usingCartesianGrid=.TRUE.,
+ delXfile='dx.box',
+ delYfile='dy.box',
+ delRFile='dz.box',
+ &
+
+# Input datasets
+ &PARM05
+ bathyFile='topog.box',
+ hydrogThetaFile='tinit.box',
+ uVelInitFile='uinit.box',
+ vVelInitFile='vinit.box',
+ pSurfInitFile='einit.box',
+ &

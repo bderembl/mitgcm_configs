@@ -1,0 +1,42 @@
+#!sh Open-boundaries
+ &OBCS_PARM01
+ OB_Ieast=100*-1,
+ OB_Iwest=100*1,
+ OB_Jnorth=100*-1,
+ OB_Jsouth=100*1,
+ useOBCSbalance=.TRUE.,
+ useOBCSsponge=.TRUE.,
+ useOBCSprescribe=.TRUE.,
+ OBWtFile   ='t_W.box',
+ OBWuFile   ='u_W.box',
+ OBWvFile   ='v_W.box',
+#
+ OBEtFile   ='t_E.box',
+ OBEuFile   ='u_E.box',
+ OBEvFile   ='v_E.box',
+#
+ OBNtFile   ='t_N.box',
+ OBNuFile   ='u_N.box',
+ OBNvFile   ='v_N.box',
+#
+ OBStFile   ='t_S.box',
+ OBSuFile   ='u_S.box',
+ OBSvFile   ='v_S.box',
+ &end
+
+# Orlanski parameters
+ &OBCS_PARM02
+ Cmax=0.45,
+ cVelTimeScale=1000.,
+ &end
+
+# *****************************************
+# Sponge Layer Parameters.
+# *****************************************
+ &OBCS_PARM03
+ Urelaxobcsinner=21600.E0,
+ Urelaxobcsbound=3600.E0,
+ Vrelaxobcsinner=21600.E0,
+ Vrelaxobcsbound=3600.E0,
+ spongeThickness=05
+ &
