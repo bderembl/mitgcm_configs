@@ -5,11 +5,11 @@
 # Continuous equation parameters
  &PARM01
  tRefFile='tref.box',
- viscAh=10.E0,
+ viscAh=1.E-2,
  viscAz=1.E-2,
  no_slip_sides=.FALSE.,
  no_slip_bottom=.FALSE.,
- diffKhT=10.E0,
+ diffKhT=1.E-3,
  diffKzT=0.E-2,
 # corimap = 0 -> fplane
 # selectCoriMap=0,
@@ -42,7 +42,7 @@
  nIter0=0,
 # nTimeSteps=20,
  endTime=8640000,
- deltaT=300.0,
+ deltaT=30.0,
  abEps=0.01,
  pChkptFreq=0.0,
  chkptFreq=0.0,

@@ -1,9 +1,9 @@
 #!sh Open-boundaries
  &OBCS_PARM01
- OB_Ieast=100*-1,
- OB_Iwest=100*1,
- OB_Jnorth=100*-1,
- OB_Jsouth=100*1,
+ OB_IeastGlobal=1,
+ OB_IwestGlobal=1,
+ OB_JnorthGlobal=1,
+ OB_JsouthGlobal=1,
  useOBCSbalance=.TRUE.,
  useOBCSsponge=.TRUE.,
  useOBCSprescribe=.TRUE.,
@@ -38,5 +38,5 @@
  Urelaxobcsbound=3600.E0,
  Vrelaxobcsinner=21600.E0,
  Vrelaxobcsbound=3600.E0,
- spongeThickness=05
+ spongeThickness=5,
  &

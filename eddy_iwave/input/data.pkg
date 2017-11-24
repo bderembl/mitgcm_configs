@@ -1,6 +1,6 @@
 #!/usr/bin/bash Packages
  &PACKAGES
  useOBCS=.TRUE.,
- useMNC=.TRUE.,
+ useMNC=.FALSE.,
  useDIAGNOSTICS=.TRUE.,
  &

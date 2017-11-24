@@ -4,24 +4,28 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 import scipy.special, scipy.interpolate, scipy.integrate
+from scipy.interpolate import UnivariateSpline
 
 plt.ion()
 
 binprec = '>f8'
+flag_plot = 1
 
 #% ================== NEW GRID =====================================
 
-si_x = 100
-si_y = 100
-si_z = 40
+si_x = 1000
+si_y = 1000
+si_z = 100
 
 
 si_x1 = si_x + 1
 si_y1 = si_y + 1
+si_z1 = si_z + 1
 
 # in m
 Lx = 100.0e3
 Ly = 100.0e3
+Lz = 4000.0
 
 dx = Lx/si_x;
 dy = Ly/si_y;
@@ -43,18 +47,48 @@ dx1 = dx*np.ones((si_x))
 dy1 = dy*np.ones((si_y))
 
 
-dz_fi = 1.0*np.array([5,5,5,5,10,10,10,10,15,15,15,15,20,20,20,20,30,30,30,30,40,40,40,50,50,50,60,60,60,80,80,100,100,120,120,140,140,160,160,180,180,180,180,200,200,200,200,200,200,200,200])
+# xf is % of grid points
+xf = [0, 0.45, 0.65, 0.8, 0.9, 1]
+# yf is % of thickness
+yf = [0, 0.05, 0.08, 0.21, 0.4, 1]
 
-dz_fi = dz_fi[::-1]
+hh = np.linspace(0,1,si_z1)
+zz = Lz*np.interp(hh,xf,yf)
 
-dz_fi2 = dz_fi/2.0
+# smooth
+nc = int(si_z/10)
+#nc = int(si_z/2)
+if nc % 2 == 0:
+  nc = nc + 1
+zz2 = np.convolve(zz, np.ones((nc,))/nc, mode='valid')
 
-dz1 = dz_fi[0:si_z]
+zz[int((nc-1)/2):int(-(nc-1)/2)] = zz2
+
+if flag_plot:
+  plt.figure()
+  plt.plot(hh,zz/Lz,'k')
+  plt.plot(hh,hh,'k--')
+  plt.plot(xf,yf,'.')
+  plt.savefig('vert_res.png')
+#  plt.close()
+
+dz1 = np.diff(zz)
+
+# reverse order to get high resolution near the bottom
+dz1 = dz1[::-1]
+
+iz = np.argmin(np.abs(zz-1000.0))
+
+print ('min dz: ', np.min(dz1))
+print ('max dz: ', np.max(dz1))
+print ('nb layers above 1000m:', iz, '/', si_z)
+
+if np.sum(dz1 < 0) > 0:
+  print ('you need you change the polynomial fit!!')
+
+dep2 = zz[0:-1] + 0.5*dz1
 
 zz = np.reshape(dz1.cumsum(),(si_z,1,1))
-
-dz2 = np.array([dz_fi2[i] + dz_fi2[i+1] for i in range(len(dz_fi2)-1)])
-dz2 = np.reshape(dz2[0:si_z-1],(si_z-1,1,1))
 
 
 dx1.astype(binprec).tofile('dx.box')
@@ -73,8 +107,8 @@ H = dz1.cumsum()[-1]
 # flat topo
 topog = -H + topog
 
-lt = 20e3 # topo wave length
-Ht = 100 # topo max height
+lt = 1e3 # topo wave length
+Ht = 80 # topo max height
 topog = topog + Ht*(1+np.sin(2*np.pi*xg/lt)*np.sin(2*np.pi*yg/lt))
 
 # # physical constants
@@ -182,6 +216,11 @@ rhop = dpdz/g0
 theta_a = -rhop/(rho_const*alphaK) 
 theta = theta_a + temp_i
 
+# readjust topog to be only in a sector of the eddy
+masktopo = uvel[0,:,:]/np.max(uvel[0,:,:])
+masktopo = np.where(masktopo<0,0,masktopo)
+topog = (topog + H)*masktopo - H
+
 uvel.astype(binprec).tofile('uinit.box')
 vvel.astype(binprec).tofile('vinit.box')
 theta.astype(binprec).tofile('tinit.box')
@@ -230,3 +269,12 @@ u_s.astype(binprec).tofile('u_S.box')
 v_s.astype(binprec).tofile('v_S.box')
 t_s.astype(binprec).tofile('t_S.box')
 
+# OBCS mask file
+
+obcsmask = 0*topog + 1
+obcsmask[0,:]  = 0
+obcsmask[:,0]  = 0
+obcsmask[:,-1] = 0
+obcsmask[-1:]  = 0
+
+# obcsmask.astype(binprec).tofile('obcsmask.box')
