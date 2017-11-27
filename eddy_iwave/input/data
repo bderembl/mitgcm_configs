@@ -27,6 +27,7 @@
  staggerTimeStep=.TRUE.
  implicitDiffusion=.TRUE.,
  implicitviscosity=.TRUE.,
+ usesinglecpuio=.TRUE.,
  &
 
 # Elliptic solver parameters
@@ -42,7 +43,7 @@
  nIter0=0,
 # nTimeSteps=20,
  endTime=8640000,
- deltaT=30.0,
+ deltaT=15.0,
  abEps=0.01,
  pChkptFreq=0.0,
  chkptFreq=0.0,
