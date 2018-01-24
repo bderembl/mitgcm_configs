@@ -3,4 +3,5 @@
  useOBCS=.TRUE.,
  useMNC=.FALSE.,
  useDIAGNOSTICS=.TRUE.,
+ useRBCS=.TRUE.,
  &

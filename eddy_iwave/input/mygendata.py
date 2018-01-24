@@ -11,10 +11,12 @@ plt.ion()
 binprec = '>f8'
 flag_plot = 1
 
+flag_topo = 2 # 0: no topo, 1: sector topo, 2 topo everywhere
+
 #% ================== NEW GRID =====================================
 
-si_x = 1024
-si_y = 1024
+si_x = 1000
+si_y = 1000
 si_z = 100
 
 
@@ -109,7 +111,8 @@ topog = -H + topog
 
 lt = 1e3 # topo wave length
 Ht = 80 # topo max height
-topog = topog + Ht*(1 + np.sin(2*np.pi*xg/lt)*np.sin(2*np.pi*yg/lt))
+if flag_topo > 0:
+  topog = topog + Ht*(1 + np.sin(2*np.pi*xg/lt)*np.sin(2*np.pi*yg/lt))
 
 # # physical constants
 rho_const = 999.8
@@ -217,9 +220,10 @@ theta_a = -rhop/(rho_const*alphaK)
 theta = theta_a + temp_i
 
 # readjust topog to be only in a sector of the eddy
-masktopo = uvel[0,:,:]/np.max(uvel[0,:,:])
-masktopo = np.where(masktopo<0,0,masktopo)
-topog = (topog + H - Ht)*masktopo - H + Ht
+if flag_topo == 1:
+  masktopo = uvel[0,:,:]/np.max(uvel[0,:,:])
+  masktopo = np.where(masktopo<0,0,masktopo)
+  topog = (topog + H - Ht)*masktopo - H + Ht
 
 uvel.astype(binprec).tofile('uinit.box')
 vvel.astype(binprec).tofile('vinit.box')
@@ -279,11 +283,21 @@ obcsmask[-1:]  = 0
 
 # obcsmask.astype(binprec).tofile('obcsmask.box')
 
-plt.figure()
-plt.subplot(111, aspect='equal')
-plt.contourf(xg*1e-3,yg*1e-3,topog,50,cmap=plt.cm.bwr)
-plt.contour(xg*1e-3,yg*1e-3,eta,colors='k')
-plt.xlabel('x (km)')
-plt.ylabel('y (km)')
+#RBCS mask 
+tauz = np.exp((zz-H)/100)
+#tauz = np.exp((zz-H)/100)+1.6e-5*zz
+u_mask = 0*uvel + tauz
+v_mask = 0*vvel + tauz
 
-plt.savefig('eddy-iwave.png',bbox_inches='tight')
+u_mask.astype(binprec).tofile('umask.box')
+v_mask.astype(binprec).tofile('vmask.box')
+
+if flag_plot:
+  plt.figure()
+  plt.subplot(111, aspect='equal')
+  plt.contourf(xg*1e-3,yg*1e-3,topog,50,cmap=plt.cm.bwr)
+  plt.contour(xg*1e-3,yg*1e-3,eta,colors='k')
+  plt.xlabel('x (km)')
+  plt.ylabel('y (km)')
+  
+  plt.savefig('eddy-iwave.png',bbox_inches='tight')

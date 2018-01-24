@@ -20,7 +20,11 @@
  &DIAGNOSTICS_LIST
 # diag_mnc     = .FALSE.,
 #--
-  fields(1,1)  = 'momVort3'
+  fields(1,1)  = 'momVort3',
+  fields(2,1)  = 'VISrI_Um',
+  fields(3,1)  = 'VISrI_Vm',
+  fields(4,1)  = 'UVEL    ',
+  fields(5,1)  = 'VVEL    ',
   fileName(1) = 'oceDiag',
   frequency(1) = 86400.,
  &
