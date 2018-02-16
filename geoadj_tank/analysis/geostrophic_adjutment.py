@@ -46,7 +46,8 @@ def f(x,si_r,rr,dr,eta0,flag_geom):
     fout[si_r+1:] = -v + detadr
   if flag_geom == 1:# cylindrical
     fout[1:si_r] = (rr[1:]*v[1:] - rr[:-1]*v[:-1])/(dr*0.5*(rr[1:]+rr[:-1])) - eta[1:-1] + eta0[1:-1]
-    fout[si_r+1:] = -v -v**2 + detadr
+    fout[si_r+1:] = -v -v**2/rr + detadr
+    fout[si_r+1] = 0.0
 
   return fout
 
@@ -57,6 +58,7 @@ vf = sol[si_r+1:]
 plt.figure()
 plt.plot(rr2,etaf,'k',label='eta')
 plt.plot(rr2,eta0[1:-1],'k--')
-plt.plot(rr,vf,'r',label='v')
+#plt.plot(rr,vf,'r',label='v')
 plt.xlabel('r/Rd')
+plt.ylabel('h/h0')
 plt.legend()
