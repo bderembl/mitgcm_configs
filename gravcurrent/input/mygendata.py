@@ -13,8 +13,8 @@ H = 0.15      # water level in the tank
 H1 = 0.05      # thickness of the lens
 Lx = 2.40      # length of the tank (x)
 Ly = 0.2       # length of the tank  (y)
-S0 = 5.0       # salinity of the light water
-S1 = 30.0      # salinity of the dense water
+S0 = 0.0       # salinity of the light water
+S1 = 25.0      # salinity of the dense water
 gg = 9.81      # gravity
 
 Lx1 = 2.30    # length of the fresh water compartment
