@@ -4,17 +4,11 @@ Set of MITgcm runs
 
 ## install MITgcm from scratch
 
-* Visit http://mitgcm.org/download/ and copy the name of the latest available version: MITgcm_XXXX.tar.gz
 
-* Dowload MITgcm in a local directory (change XXXX):
-```
-wget http://mitgcm.org/download/MITgcm_XXXX.tar.gz
-```
 
-* untar the source
+* Dowload MITgcm in a local directory 
 ```
-tar xvf MITgcm_XXXX.tar.gz
-mv MITgcm_XXXX MITgcm
+git clone https://github.com/MITgcm/MITgcm.git
 cd MITgcm
 ```
 
@@ -24,7 +18,7 @@ git clone https://github.com/bderembl/mitgcm_configs
 cd mitgcm_configs
 ```
 
-## Running a configuration
+## Run a configuration
 
 * In each configuration (e.g. for 'corner' here)
 
