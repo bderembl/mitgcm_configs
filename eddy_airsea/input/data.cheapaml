@@ -1,0 +1,31 @@
+#!sh  CheapAML
+ &CHEAPAML_CONST
+ cheapaml_ntim = 6		
+ cheapaml_mask_width=5
+ cheapaml_h = 1000.
+ cheapaml_kdiff = 1000.
+ cheap_taurelax = 3600,
+ cheap_taurelaxOce = 3600.0,			
+ &
+
+ &CHEAPAML_PARM01
+ UWindFile='u10.box'
+ VWindFile='v10.box'
+ SolarFile='ssrd.box'
+ AirTempFile='t2.box'
+ TrFile='t2.box'
+ AirQFile='d2.box'
+ QrFile='d2.box'
+#cheap_hfile='blh.box'
+#cheap_clfile='clouds.box'
+#cheap_dlwfile='strd.box'
+ &
+ 
+ &CHEAPAML_PARM02 
+ FluxFormula='COARE3'
+ useFreshWaterFlux=.FALSE.,
+ useFluxLimit=.TRUE.,
+ usetimevarblh=.FALSE.,
+ useclouds=.FALSE.,
+ usedlongwave=.FALSE.,
+ &
