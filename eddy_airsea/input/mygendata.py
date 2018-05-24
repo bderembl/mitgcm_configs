@@ -157,40 +157,50 @@ vvel = FZ*np.tile(v_out,[si_z,1,1])
 
 
 # compute pressure field
-def integrand(rr):
+def geostrophic_part(rr):
   v = vel_rankine(rr)
-  res = v**2/rr  + f0*v
+  res = f0*v
   res = np.where(rr == 0, 0.0,res)
   return res
 
-def comp_p(x):
-  
+def cyclostrophic_part(rr):
+  v = vel_rankine(rr)
+  res = v**2/rr
+  res = np.where(rr == 0, 0.0,res)
+  return res
+
+def comp_p(x, func):
   if x ==0:
     xx = 1e-12
   else:
     xx = 1.0*x
 
-  a,b = scipy.integrate.quad(integrand,0,xx)
+  a,b = scipy.integrate.quad(func,0,xx)
   return a
 
 rr = np.linspace(0.0,2*Lx, 10*si_x)
-p1 = [ comp_p(x) for x in rr.flatten() ]
-fint = scipy.interpolate.interp1d(rr, p1)
+p1 = [ comp_p(x,geostrophic_part) for x in rr.flatten() ]
+p2 = [ comp_p(x,cyclostrophic_part) for x in rr.flatten() ]
+fint1 = scipy.interpolate.interp1d(rr, p1)
+fint2 = scipy.interpolate.interp1d(rr, p2)
 
-p_out = rho_const*fint(rad_gg)
+p_out1 = rho_const*fint1(rad_gg)
+p_out2 = rho_const*fint2(rad_gg)
 # remove const at infinity
-p_out = p_out - p_out[0,0]
+p_out1 = p_out1 - p_out1[0,0]
+p_out2 = p_out2 - p_out2[0,0]
 
-
-eta = p_out/rho_const/g0
-pres = FZ*np.tile(p_out,[si_z,1,1])
-
-dpdz = FpZ*np.tile(p_out,[si_z,1,1])
+dpdz = FpZ*np.tile(p_out1,[si_z,1,1]) +  2*FZ*FpZ*np.tile(p_out2,[si_z,1,1])
 rhop = dpdz/g0
 
 # convert to temperature
 theta_a = -rhop/(rho_const*alphaK) 
 theta = theta_a + temp_i
+
+# free surface
+pres = FZ*np.tile(p_out1,[si_z,1,1]) + FZ**2*np.tile(p_out2,[si_z,1,1])
+eta = pres[0,:,:]/rho_const/g0 - rhop[0,:,:]/rho_const*0.5*dz1[0]
+
 
 uvel.astype(binprec).tofile('uinit.box')
 vvel.astype(binprec).tofile('vinit.box')

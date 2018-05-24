@@ -6,6 +6,7 @@
  &PARM01
  tRefFile='tref.box',
  viscAh=10.,
+# viscA4=1.E8,
  viscAz=1.E-5,
  no_slip_sides=.FALSE.,
  no_slip_bottom=.FALSE.,

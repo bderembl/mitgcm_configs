@@ -10,9 +10,11 @@ Set of MITgcm runs
 ```
 git clone https://github.com/MITgcm/MITgcm.git
 cd MITgcm
+echo "export MITGCMDIR=$PWD" >> ~/.bashrc
+echo "export PATH=\$PATH:\$MITGCMDIR/tools" >> ~/.bashrc
 ```
 
-* get mitgcm_configs
+* In a separate repository get mitgcm_configs
 ```
 git clone https://github.com/bderembl/mitgcm_configs
 cd mitgcm_configs
@@ -45,7 +47,7 @@ module load openmpi
 
 ```
 cd build
-../../../tools/genmake2 -mods=../code (-mpi)
+genmake2 -mods=../code (-mpi)
 make depend
 make -j4
 ```
