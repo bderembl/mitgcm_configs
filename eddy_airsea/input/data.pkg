@@ -5,5 +5,5 @@
  useMNC=.TRUE.,
  useDIAGNOSTICS=.FALSE.,
  useggl90=.TRUE.,
- useCHEAPAML=.TRUE.,
+ useCHEAPAML=.FALSE.,
  &
