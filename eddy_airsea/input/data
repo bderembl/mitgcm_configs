@@ -24,7 +24,7 @@
  hFacMin=0.1,
  nonHydrostatic=.FALSE.,
  readBinaryPrec=32,
-# tempAdvScheme=33,
+ tempAdvScheme=4,
  staggerTimeStep=.TRUE.
  implicitDiffusion=.TRUE.,
  implicitviscosity=.TRUE.,
