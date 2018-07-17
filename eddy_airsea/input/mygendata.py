@@ -97,10 +97,22 @@ dz1.astype(binprec).tofile('dz.box')
 
 #% ============== background density profile ===================
 N2 = 3e-5
-temp_i = -N2/g0/alphaK*zc
-temp_i = temp_i - temp_i[-1]
+tref = -N2/g0/alphaK*zc
+tref = tref - tref[-1]
 
-temp_i = temp_i.reshape((si_z,1,1))
+# tref_dat = np.loadtxt('temp_winter.dat')
+# # add upper and lower boundary for interpolation
+# si_tref,naux = tref_dat.shape
+# tref_dat2 = np.zeros((si_tref+2,2))
+# tref_dat2[1:-1,:] = tref_dat
+# tref_dat2[0,1] = tref_dat[0,1]
+# tref_dat2[-1,:] = tref_dat[-1,:]
+# tref_dat2[-1,0] = -10000
+
+# t_interp = scipy.interpolate.interp1d(tref_dat2[:,0], tref_dat2[:,1])
+# tref = t_interp(-zc)
+
+tref = tref.reshape((si_z,1,1))
 
 #%==================== SST - LAND ===================================
 
@@ -119,7 +131,7 @@ y_c = Ly/2     # y center
 R0 = 40e3      # radius
 
 DeltaT = 5.0   # SST anomaly
-z0 = 600.0     # characteristic depth (m)
+z0 = 200.0     # characteristic depth (m)
 vmax = 0.5     # m/s
 
 # vertical profile
@@ -195,7 +207,7 @@ rhop = dpdz/g0
 
 # convert to temperature
 theta_a = -rhop/(rho_const*alphaK) 
-theta = theta_a + temp_i
+theta = theta_a + tref
 
 # free surface
 pres = FZ*np.tile(p_out1,[si_z,1,1]) + FZ**2*np.tile(p_out2,[si_z,1,1])
@@ -208,7 +220,7 @@ theta.astype(binprec).tofile('tinit.box')
 
 eta.astype(binprec).tofile('einit.box')
 
-temp_i.astype(binprec).tofile('tref.box')
+tref.astype(binprec).tofile('tref.box')
 #sref.astype(binprec).tofile('sref.box')
 
 
