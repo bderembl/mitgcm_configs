@@ -735,10 +735,10 @@ C      averaged (open-ocean fraction + ice-covered fraction).
         DO bi=myBxLo(myThid),myBxHi(myThid)
           DO j = 1-OLy,sNy+OLy
             DO i = 1-OLx+1,sNx+OLx
-              fu(i,j,bi,bj) = 0.0
-              fv(i,j,bi,bj) = 0.0
-C!BD              Qnet(i,j,bi,bj) = 0.0
-C!BD              EmPmR(i,j,bi,bj) = 0.0
+C!BD              fu(i,j,bi,bj) = 0.0
+C!BD              fv(i,j,bi,bj) = 0.0
+              Qnet(i,j,bi,bj) = 0.0
+              EmPmR(i,j,bi,bj) = 0.0
             ENDDO
           ENDDO
         ENDDO
