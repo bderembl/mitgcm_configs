@@ -2,8 +2,8 @@
  &PACKAGES
  useOBCS=.FALSE.,
  useRBCS=.TRUE.,
- useMNC=.FALSE.,
+ useMNC=.TRUE.,
  useDIAGNOSTICS=.TRUE.,
- useggl90=.TRUE.,
- useCHEAPAML=.TRUE.,
+ useggl90=.FALSE.,
+ useCHEAPAML=.FALSE.,
  &
