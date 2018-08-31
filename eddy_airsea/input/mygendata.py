@@ -29,7 +29,7 @@ si_z1 = si_z + 1
 # in m
 Lx = 300.0e3
 Ly = 300.0e3
-Lz = 1000
+Lz = 300
 
 dx = Lx/si_x;
 dy = Ly/si_y;
@@ -53,8 +53,10 @@ dy1 = dy*np.ones((si_y))
 
 # xf is % of grid points
 xf = [0, 0.4, 0.6, 0.8, 0.9, 1]
+#xf = [0, 0.5, 1]
 # yf is % of thickness
 yf = [0, 0.08, 0.14, 0.21, 0.4, 1]
+#yf = [0, 0.5, 1]
 
 hh = np.linspace(0,1,si_z1)
 zf = Lz*np.interp(hh,xf,yf)
@@ -97,6 +99,7 @@ dz1.astype(binprec).tofile('dz.box')
 
 #% ============== background density profile ===================
 N2 = 3e-5
+#N2 = 0.
 tref = -N2/g0/alphaK*zc
 tref = tref - tref[-1]
 
@@ -132,14 +135,16 @@ R0 = 40e3      # radius
 
 DeltaT = 5.0   # SST anomaly
 z0 = 200.0     # characteristic depth (m)
-vmax = 0.5     # m/s
+vmax = -0.5     # m/s
 
 # vertical profile
 FZ = 1-scipy.special.erf(zc/z0)
+FZ = 0*FZ + 1
 FZ = FZ.reshape(si_z,1,1)
 
 # vertical derivative
 FpZ = -1/z0*2/np.sqrt(np.pi)*np.exp(-zc**2/z0**2)
+FpZ = 0*FpZ 
 FpZ = FpZ.reshape(si_z,1,1)
 
 # grid at U,V,T points
@@ -213,6 +218,8 @@ theta = theta_a + tref
 pres = FZ*np.tile(p_out1,[si_z,1,1]) + FZ**2*np.tile(p_out2,[si_z,1,1])
 eta = pres[0,:,:]/rho_const/g0 - rhop[0,:,:]/rho_const*0.5*dz1[0]
 
+uvel[0,:,:] = 0*uvel[0,:,:]
+vvel[0,:,:] = 0*vvel[0,:,:]
 
 uvel.astype(binprec).tofile('uinit.box')
 vvel.astype(binprec).tofile('vinit.box')
