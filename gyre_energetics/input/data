@@ -1,0 +1,58 @@
+#!sh 
+# ====================
+# | Model parameters |
+# ====================
+#
+# Continuous equation parameters
+ &PARM01
+ viscAh=5000.,
+ viscAz=1.e-4,
+ diffKhT=5000.,
+ diffKzT=1.e-5,
+ no_slip_sides=.FALSE.,
+ no_slip_bottom=.FALSE.,
+ f0=3.08e-5,
+ beta=2e-11,
+ eosType='LINEAR',
+ rigidLid=.FALSE.,
+ implicitFreeSurface=.TRUE.,
+ readBinaryPrec=32,
+ implicitviscosity=.TRUE.,
+ implicitDiffusion=.TRUE.,
+ saltStepping=.FALSE.,
+ tempStepping=.FALSE.,
+ &
+
+# Elliptic solver parameters
+ &PARM02
+ cg2dMaxIters=500,
+ cg2dTargetResidual=1.E-9,
+ &
+
+# Time stepping parameters
+ &PARM03
+ nIter0=0,
+ endTime=311040000,
+ deltaT=1200.0,
+ pChkptFreq=0.0,
+ chkptFreq=0.0,
+ dumpFreq=864000,
+ taveFreq=0,
+ monitorFreq=2592000.,
+ tauThetaClimRelax=2922857.,
+ &
+
+# Gridding parameters
+ &PARM04
+ usingCartesianGrid=.TRUE.,
+ delXfile='dx.box',
+ delYfile='dy.box',
+ delRFile='dz.box',
+ &
+ 
+# Input datasets
+ &PARM05
+ bathyFile='topog.box',
+ zonalwindfile='windx.box',
+ thetaClimFile='sstclim.box'
+ &

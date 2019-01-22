@@ -1,0 +1,3 @@
+* Energy budget of an idealized mid-latitude ocean basin
+
+in =input/data= turn tempStepping on or off

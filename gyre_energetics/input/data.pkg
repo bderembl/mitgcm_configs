@@ -1,0 +1,5 @@
+#!/usr/bin/bash Packages
+ &PACKAGES
+ useMNC=.TRUE.,
+ useKPP=.TRUE.,
+ &
