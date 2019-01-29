@@ -55,4 +55,8 @@
  bathyFile='topog.box',
  zonalwindfile='windx.box',
  thetaClimFile='sstclim.box'
+ hydrogThetaFile='tinit.box',
+ uVelInitFile='uinit.box',
+ vVelInitFile='vinit.box',
+ pSurfInitFile='einit.box',
  &

@@ -141,3 +141,14 @@ windx = -tauW*np.sin(2*np.pi*yg/Ly )
 #windx = windx*ff.reshape(si_y,1)/fMin
 windx.astype(binprec).tofile('windx.box')
 
+#=============== Initial conditions ===================================
+
+uinit = np.zeros((si_z,si_y,si_x));
+vinit = np.zeros((si_z,si_y,si_x));
+tinit = np.zeros((si_z,si_y,si_x))
+einit = np.zeros((si_y,si_x));
+
+uinit.astype(binprec).tofile('uinit.box')
+vinit.astype(binprec).tofile('vinit.box')
+tinit.astype(binprec).tofile('tinit.box')
+einit.astype(binprec).tofile('einit.box')

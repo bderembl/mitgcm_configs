@@ -1,5 +1,6 @@
-#!/usr/bin/bash Packages
+#!sh Packages
  &PACKAGES
- useMNC=.TRUE.,
+ useMNC=.FALSE.,
  useKPP=.TRUE.,
+ useDIAGNOSTICS=.TRUE.,
  &
