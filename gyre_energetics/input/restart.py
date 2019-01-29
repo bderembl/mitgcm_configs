@@ -11,7 +11,7 @@ binprec = '>f4'
 
 flag_interp = 0
 
-dir0 = '../run/mnc_test_0002/'
+dir0 = '../run/mnc_test_0001/'
 file1 = 'state.*'
 
 #f1 = netcdf.netcdf_file(dir0 + file1,'r')
