@@ -11,7 +11,7 @@ binprec = '>f4'
 
 flag_interp = 0
 
-dir0 = '../run/mnc_test_0001/'
+dir0 = '../run/mnc_test_0002/'
 file1 = 'state.*'
 
 #f1 = netcdf.netcdf_file(dir0 + file1,'r')
@@ -92,7 +92,7 @@ else:
   uvel_n  = uvel
   vvel_n  = vvel
   theta_n = theta
-  eta_n   = theta
+  eta_n   = eta
   
 
 uvel_n.astype(binprec).tofile('uinit.box')
