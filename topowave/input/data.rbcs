@@ -1,0 +1,15 @@
+#!sh RBCS package parameters:
+&RBCS_PARM01
+ tauRelaxT=10.,
+ relaxMaskFile='tmask.box',
+ useRBCtemp=.TRUE.,
+ relaxTFile='trelax.box',
+ tauRelaxU=10.,
+ relaxMaskUFile='umask.box',
+ useRBCuVel=.TRUE.,
+ relaxUFile='urelax.box',
+ &
+
+# RBCS for pTracers (read this namelist only when ptracers pkg is compiled)
+ &RBCS_PARM02
+ &

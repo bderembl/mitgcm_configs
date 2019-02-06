@@ -1,0 +1,30 @@
+#!sh Open-boundaries
+ &OBCS_PARM01
+ OB_Ieast=-1,
+ OB_Iwest=1,
+# useOrlanskiEast=.TRUE.,
+# useOrlanskiWest=.TRUE.,
+ useOBCSbalance=.TRUE.,
+ useOBCSprescribe=.TRUE.,
+ useOBCSsponge=.TRUE.,
+ OBWtFile   ='t_W.box',
+ OBWuFile   ='u_W.box',
+#
+ OBEtFile   ='t_E.box',
+ OBEuFile   ='u_E.box',
+ &end
+
+# Orlanski parameters
+ &OBCS_PARM02
+ Cmax=0.45,
+ cVelTimeScale=1000.,
+ &end
+
+# *****************************************
+# Sponge Layer Parameters.
+# *****************************************
+ &OBCS_PARM03
+ Urelaxobcsinner=600.E0,
+ Urelaxobcsbound=5.E0,
+ spongeThickness=05
+ &
