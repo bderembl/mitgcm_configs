@@ -20,7 +20,7 @@
  hFacmin=0.1,
  rigidLid=.FALSE.,
  implicitFreeSurface=.TRUE.,
- nonHydrostatic=.FALSE.,
+ nonHydrostatic=.TRUE.,
  saltStepping=.FALSE.,
  readBinaryPrec=32,
  implicitDiffusion=.TRUE.,
@@ -36,7 +36,7 @@
  &PARM02
  cg2dMaxIters=1000,
  cg2dTargetResidual=1.E-7,
- cg3dMaxIters=10,
+ cg3dMaxIters=100,
  cg3dTargetResidual=1.E-9,
  &
 
