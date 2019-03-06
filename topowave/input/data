@@ -48,7 +48,7 @@
  abEps=0.1,
  pChkptFreq=0.0,
  chkPtFreq=0.0,
- dumpFreq=200.0,
+ dumpFreq=600.0,
  monitorSelect=2,
  monitorFreq=180,
  &
