@@ -24,7 +24,7 @@
 # Sponge Layer Parameters.
 # *****************************************
  &OBCS_PARM03
- Urelaxobcsinner=600.E0,
- Urelaxobcsbound=5.E0,
- spongeThickness=05
+ Urelaxobcsinner=100.E0,
+ Urelaxobcsbound=10.E0,
+ spongeThickness=10
  &

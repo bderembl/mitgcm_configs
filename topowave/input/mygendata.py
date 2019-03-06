@@ -8,89 +8,76 @@ plt.ion()
 binprec = '>f4'
 flag_plot = 0
 
-Lz = 15000       # total depth
-Lx = 20000     # length of the domain
+Lz = 50000       # total depth
+Lx = 60000     # length of the domain
 Ly = 1.0       # length of the tank  (y)
 gg = 9.81      # gravity
-rho0z = 16.3e-4   # stratification (d rho /dz)
+rho0z = 5.1e-5   # stratification (d rho /dz)
 u0z = 1e-3     # vertical shear (du/dz) s-1
 alphaK = 2.0e-4
 rho0 = 1e3
 nu = 1.0
+# topography
+L0 = 1000   # m
+H0 = 149.5 # m not exactly 100m to avoid discretization issue
+
 
 # ========== grid =========
 
+def stretch(xf,yf,Lx,si_x,rev):
+
+  hh = np.linspace(0,1,si_x+1)
+  xf = Lx*np.interp(hh,xf,yf)
+  
+  # smooth
+  nc = int(si_x/10)
+  if nc % 2 == 0:
+    nc = nc + 1
+  zz2 = np.convolve(xf, np.ones((nc,))/nc, mode='valid')
+  
+  xf[int((nc-1)/2):int(-(nc-1)/2)] = zz2
+  
+  dx = np.diff(xf)
+
+  # reverse order to get high resolution near the bottom
+  if rev:
+    dx = dx[::-1]
+  xf[1:] = np.cumsum(dx)
+  
+  xc = xf[0:-1] + 0.5*dx
+  return xc,xf,dx
+
 si_x = 300
 si_y = 1
-si_z = 400
+si_z = 600
 
 si_x1 = si_x + 1
 si_y1 = si_y + 1
 si_z1 = si_z + 1
 
-dx = Lx/si_x
-dy = Ly/si_y
+dy1 = np.ones((si_y))
 
-dx1 = dx*np.ones((si_x))
-dy1 = dy*np.ones((si_y))
-
-xx = Lx*(np.arange(0,si_x) + 0.5)/(1.0*si_x)
 yy = Ly*(np.arange(0,si_y) + 0.5)/(1.0*si_y)
-
-xx1 = Lx*(np.arange(0,si_x+1) )/(1.0*si_x)
 yy1 = Ly*(np.arange(0,si_y+1) )/(1.0*si_y)
-
-dz = Lz/si_z
-dz1 = dz*np.ones((si_z))
-zz = np.cumsum(dz1)
-
-xg,yg = np.meshgrid(xx,yy) 
-xu,yu = np.meshgrid(xx1[:-1],yy) 
-xv,yv = np.meshgrid(xx,yy1[:-1]) 
-xc,yc = np.meshgrid(xx1,yy1) 
 
 # xf is % of grid points
 xf = [0, 0.4, 0.6, 0.8, 0.9, 1]
 # yf is % of thickness
 yf = [0, 0.08, 0.14, 0.21, 0.4, 1]
 
-hh = np.linspace(0,1,si_z1)
-zf = Lz*np.interp(hh,xf,yf)
+zc,zf,dz1 = stretch(xf,yf,Lz,si_z,1)
 
-# smooth
-nc = int(si_z/10)
-if nc % 2 == 0:
-  nc = nc + 1
-zz2 = np.convolve(zf, np.ones((nc,))/nc, mode='valid')
-
-zf[int((nc-1)/2):int(-(nc-1)/2)] = zz2
+# xf is % of grid points
+xf = [0, 0.2, 0.8, 1]
+# yf is % of thickness
+yf = [0, 0.4, 0.6, 1]
+xx,xx1,dx1 = stretch(xf,yf,Lx,si_x,0)
 
 
-if flag_plot:
-  plt.figure()
-  plt.plot(hh,zf/Lz,'k')
-  plt.plot(hh,hh,'k--')
-  plt.plot(xf,yf,'.')
-  plt.savefig( 'vert_res.png')
-  plt.close()
-
-dz1 = np.diff(zf)
-
-# reverse order to get high resolution near the bottom
-dz1 = dz1[::-1]
-zf[1:] = np.cumsum(dz1)
-
-iz = np.argmin(np.abs(zf-500.0))
-
-print ('dx= ', dx)
-print ('min dz: ', np.min(dz1))
-print ('max dz: ', np.max(dz1))
-print ('nb layers above 500m:', iz, '/', si_z)
-
-if np.sum(dz1 < 0) > 0:
-  print ('you need you change the polynomial fit!')
-
-zc = zf[0:-1] + 0.5*dz1
+xg,yg = np.meshgrid(xx,yy)
+xu,yu = np.meshgrid(xx1[:-1],yy)
+xv,yv = np.meshgrid(xx,yy1[:-1])
+xc,yc = np.meshgrid(xx1,yy1)
 
 
 dx1.astype(binprec).tofile('dx.box')
@@ -103,8 +90,6 @@ dz1.astype(binprec).tofile('dz.box')
 h_mit = -Lz + np.zeros((si_y,si_x))
 
 x0 = Lx/2  # m
-L0 = 1000   # m
-H0 = 99.5 # m not exactly 100m to avoid discretization issue 
 #H0 = 99.5 # m not exactly 100m to avoid discretization issue 
 
 h_mit = h_mit + H0*(np.exp(-(xg-x0)**2/(2*L0**2)))  #H0/(1+(xg-x0)**2/(2*L0**2))

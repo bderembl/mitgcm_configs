@@ -20,7 +20,7 @@
  hFacmin=0.1,
  rigidLid=.FALSE.,
  implicitFreeSurface=.TRUE.,
- nonHydrostatic=.TRUE.,
+ nonHydrostatic=.FALSE.,
  saltStepping=.FALSE.,
  readBinaryPrec=32,
  implicitDiffusion=.TRUE.,
