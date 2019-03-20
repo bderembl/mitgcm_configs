@@ -9,6 +9,7 @@ plt.ion()
 binprec = '>f4'
 
 flag_plot = 0
+flag_bt = 0  # 1: barotropic vortex, 0: baroclinic vortex
 
 # # physical constants
 rho_const = 999.8
@@ -18,6 +19,22 @@ f0 = 1e-4
 
 
 #% ================== NEW GRID =====================================
+
+def stretch(xf,yf,Lx,si_x,rev):
+
+  hh = np.linspace(0,1,si_x+1)
+  xf = Lx*np.interp(hh,xf,yf)
+
+  dx = np.diff(xf)
+
+  # reverse order to get high resolution near the bottom
+  if rev:
+    dx = dx[::-1]
+  xf[1:] = np.cumsum(dx)
+  
+  xc = xf[0:-1] + 0.5*dx
+  return xc,xf,dx
+
 si_x = 250
 si_y = 250
 si_z = 20
@@ -29,7 +46,7 @@ si_z1 = si_z + 1
 # in m
 Lx = 300.0e3
 Ly = 300.0e3
-Lz = 300
+Lz = 1300
 
 dx = Lx/si_x;
 dy = Ly/si_y;
@@ -50,34 +67,11 @@ xc,yc = np.meshgrid(xx1,yy1)
 dx1 = dx*np.ones((si_x))
 dy1 = dy*np.ones((si_y))
 
+slope = 4
+xfz = np.linspace(0,1,1000)
+yfz = np.sinh(slope*xfz)/np.sinh(slope)
+zc,zf,dz1 = stretch(xfz,yfz,Lz,si_z,0)
 
-# xf is % of grid points
-xf = [0, 0.4, 0.6, 0.8, 0.9, 1]
-#xf = [0, 0.5, 1]
-# yf is % of thickness
-yf = [0, 0.08, 0.14, 0.21, 0.4, 1]
-#yf = [0, 0.5, 1]
-
-hh = np.linspace(0,1,si_z1)
-zf = Lz*np.interp(hh,xf,yf)
-
-# smooth
-nc = int(si_z/10)
-if nc % 2 == 0:
-  nc = nc + 1
-zz2 = np.convolve(zf, np.ones((nc,))/nc, mode='valid')
-
-zf[int((nc-1)/2):int(-(nc-1)/2)] = zz2
-
-if flag_plot:
-  plt.figure()
-  plt.plot(hh,zz/Lz,'k')
-  plt.plot(hh,hh,'k--')
-  plt.plot(xf,yf,'.')
-  plt.savefig(outputdir2 + 'vert_res.png')
-  plt.close()
-
-dz1 = np.diff(zf)
 
 iz = np.argmin(np.abs(zf-500.0))
 
@@ -88,8 +82,6 @@ print ('nb layers above 500m:', iz, '/', si_z)
 
 if np.sum(dz1 < 0) > 0:
   print ('you need you change the polynomial fit!')
-
-zc = zf[0:-1] + 0.5*dz1
 
 
 dx1.astype(binprec).tofile('dx.box')
@@ -133,18 +125,19 @@ x_c = Lx/2     # x center
 y_c = Ly/2     # y center
 R0 = 40e3      # radius
 
-DeltaT = 5.0   # SST anomaly
 z0 = 200.0     # characteristic depth (m)
-vmax = -0.5     # m/s
+vmax = 0.5     # m/s
 
 # vertical profile
 FZ = 1-scipy.special.erf(zc/z0)
-FZ = 0*FZ + 1
+if flag_bt:
+  FZ = 0*FZ + 1
 FZ = FZ.reshape(si_z,1,1)
 
 # vertical derivative
 FpZ = -1/z0*2/np.sqrt(np.pi)*np.exp(-zc**2/z0**2)
-FpZ = 0*FpZ 
+if flag_bt:
+  FpZ = 0*FpZ 
 FpZ = FpZ.reshape(si_z,1,1)
 
 # grid at U,V,T points
