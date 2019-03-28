@@ -3,6 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.interpolate, scipy.integrate
+from scipy import special
 
 plt.ion()
 
@@ -10,13 +11,15 @@ binprec = '>f4'
 
 flag_plot = 0
 flag_bt = 0  # 1: barotropic vortex, 0: baroclinic vortex
+flag_eddy = 2 # 1: isolated eddy, 2: modon
+flag_surf = 0 # 0: non perturbated surface field
 
 # # physical constants
 rho_const = 999.8
 alphaK = 2.0e-4
 g0 = 9.8
 f0 = 1e-4
-
+eps = 1e-10 # a small number
 
 #% ================== NEW GRID =====================================
 
@@ -112,17 +115,19 @@ tref = tref.reshape((si_z,1,1))
 #%==================== SST - LAND ===================================
 
 landh  = np.zeros((si_y,si_x));
-theta  = np.zeros((si_z,si_y,si_x));
-uvel   = np.zeros((si_z,si_y,si_x));
-vvel   = np.zeros((si_z,si_y,si_x));
-
 
 H = dz1.cumsum()[-1]
 landh = -H + landh
 
-#gaussian eddy
-x_c = Lx/2     # x center
-y_c = Ly/2     # y center
+#==================== Velocity and temperature profiles===============
+eta   = np.zeros((si_y,si_x));
+theta = np.zeros((si_z,si_y,si_x));
+uvel  = np.zeros((si_z,si_y,si_x));
+vvel  = np.zeros((si_z,si_y,si_x));
+
+
+x_c = Lx/2  + eps   # x center
+y_c = Ly/2  + eps   # y center
 R0 = 40e3      # radius
 
 z0 = 200.0     # characteristic depth (m)
@@ -151,68 +156,110 @@ theta_cc = np.arctan2(yc-y_c,xc-x_c)
 theta_gu = np.arctan2(yu-y_c,xu-x_c)
 theta_gv = np.arctan2(yv-y_c,xv-x_c)
 
-# create velocity profile
-# hyperpolic vortex (~ rankine)
-def vel_rankine(rr):
-  v = -vmax*np.tanh(rr/R0)/(np.cosh(rr/R0))**2/(np.tanh(1.0)/(np.cosh(1.0))**2)
-  v = np.where(rr == 0, 0.0,v)
-  return v
+if flag_eddy == 1:
+  # Isolated eddy constructed from the velocity profile
+  # create velocity profile
+  # hyperpolic vortex (~ rankine)
+  def vel_rankine(rr):
+    v = -vmax*np.tanh(rr/R0)/(np.cosh(rr/R0))**2/0.3849001783408565
+    v = np.where(rr == 0, 0.0,v)
+    return v
+  
+  # surface velocity
+  u_s = vel_rankine(rad_gu)*np.sin(-theta_gu)
+  v_s = vel_rankine(rad_gv)*np.cos(theta_gv)
+    
+  # compute pressure field
+  def geostrophic_part(rr):
+    v = vel_rankine(rr)
+    res = f0*v
+    res = np.where(rr == 0, 0.0,res)
+    return res
+  
+  def cyclostrophic_part(rr):
+    v = vel_rankine(rr)
+    res = v**2/rr
+    res = np.where(rr == 0, 0.0,res)
+    return res
+  
+  def comp_p(x, func):
+    if x ==0:
+      xx = 1e-12
+    else:
+      xx = 1.0*x
+  
+    a,b = scipy.integrate.quad(func,0,xx)
+    return a
+  
+  rr = np.linspace(0.0,2*Lx, 10*si_x)
+  p1 = [ comp_p(x,geostrophic_part) for x in rr.flatten() ]
+  p2 = [ comp_p(x,cyclostrophic_part) for x in rr.flatten() ]
+  fint1 = scipy.interpolate.interp1d(rr, p1)
+  fint2 = scipy.interpolate.interp1d(rr, p2)
+  
+  p_out1 = rho_const*fint1(rad_gg)
+  p_out2 = rho_const*fint2(rad_gg)
+  # remove const at infinity
+  p_out1 = p_out1 - p_out1[0,0]
+  p_out2 = p_out2 - p_out2[0,0]
+  
+  dpdz = FpZ*np.tile(p_out1,[si_z,1,1]) +  2*FZ*FpZ*np.tile(p_out2,[si_z,1,1])
+  rhop = dpdz/g0
+  
+  # free surface
+  pres = FZ*np.tile(p_out1,[si_z,1,1]) + FZ**2*np.tile(p_out2,[si_z,1,1])
+  eta = pres[0,:,:]/rho_const/g0 - rhop[0,:,:]/rho_const*0.5*dz1[0]
+  
+elif flag_eddy == 2:
+  # modon constructed via the pressure field
+  def modon_disprel(x):
+    lamb = 1.0
+    y = x*special.jv(1,x)/special.jv(2,x)+ lamb*special.kn(1,lamb)/special.kn(2,lamb);
+  
+    return y
+    
+  lamb = 1;
+  nu = 1;  
+  
+  xguess = 4.0
+  pi_cap = scipy.optimize.newton(modon_disprel,xguess)
+  psi1 = ((special.jv(nu,pi_cap*rad_cc/R0)/special.jv(nu,pi_cap)-rad_cc/R0)*(lamb/pi_cap)**2-rad_cc/R0)*np.sin(theta_cc)
+  psi2 = (-special.kv(nu,lamb*rad_cc/R0)/special.kv(nu,lamb))*np.sin(theta_cc);
+  
+  psi = np.where(rad_cc>R0,psi2,psi1)
 
-u_out = vel_rankine(rad_gu)*np.sin(-theta_gu)
-v_out = vel_rankine(rad_gv)*np.cos(theta_gv)
+  v_s = np.diff(psi,1,1)/(f0*dx*rho_const)
+  u_s = -np.diff(psi,1,0)/(f0*dy*rho_const)
 
+  u_s = u_s[:,:-1]
+  v_s = v_s[:-1,:]
+
+  u_sm = np.abs(u_s).max()
+  u_s = u_s*vmax/u_sm
+  v_s = v_s*vmax/u_sm
+  psi = psi*vmax/u_sm
+  p0 = np.tile(0.25*(psi[:-1,:-1] + psi[1:,:-1] + psi[1:,1:] + psi[:-1,1:]),[si_z,1,1])
+
+  rhop = FpZ*p0/g0
+  
+  # free surface
+  eta = FZ[0]*p0[0,:,:]/rho_const/g0 - rhop[0,:,:]/rho_const*0.5*dz1[0]
+  
+
+  
 # 3D velocity field
-uvel = FZ*np.tile(u_out,[si_z,1,1])
-vvel = FZ*np.tile(v_out,[si_z,1,1])
+uvel = FZ*np.tile(u_s,[si_z,1,1])
+vvel = FZ*np.tile(v_s,[si_z,1,1])
 
-
-# compute pressure field
-def geostrophic_part(rr):
-  v = vel_rankine(rr)
-  res = f0*v
-  res = np.where(rr == 0, 0.0,res)
-  return res
-
-def cyclostrophic_part(rr):
-  v = vel_rankine(rr)
-  res = v**2/rr
-  res = np.where(rr == 0, 0.0,res)
-  return res
-
-def comp_p(x, func):
-  if x ==0:
-    xx = 1e-12
-  else:
-    xx = 1.0*x
-
-  a,b = scipy.integrate.quad(func,0,xx)
-  return a
-
-rr = np.linspace(0.0,2*Lx, 10*si_x)
-p1 = [ comp_p(x,geostrophic_part) for x in rr.flatten() ]
-p2 = [ comp_p(x,cyclostrophic_part) for x in rr.flatten() ]
-fint1 = scipy.interpolate.interp1d(rr, p1)
-fint2 = scipy.interpolate.interp1d(rr, p2)
-
-p_out1 = rho_const*fint1(rad_gg)
-p_out2 = rho_const*fint2(rad_gg)
-# remove const at infinity
-p_out1 = p_out1 - p_out1[0,0]
-p_out2 = p_out2 - p_out2[0,0]
-
-dpdz = FpZ*np.tile(p_out1,[si_z,1,1]) +  2*FZ*FpZ*np.tile(p_out2,[si_z,1,1])
-rhop = dpdz/g0
-
-# convert to temperature
+# convert density to temperature
 theta_a = -rhop/(rho_const*alphaK) 
 theta = theta_a + tref
 
-# free surface
-pres = FZ*np.tile(p_out1,[si_z,1,1]) + FZ**2*np.tile(p_out2,[si_z,1,1])
-eta = pres[0,:,:]/rho_const/g0 - rhop[0,:,:]/rho_const*0.5*dz1[0]
 
-uvel[0,:,:] = 0*uvel[0,:,:]
-vvel[0,:,:] = 0*vvel[0,:,:]
+if flag_surf:
+  uvel[0,:,:] = 0*uvel[0,:,:]
+  vvel[0,:,:] = 0*vvel[0,:,:]
+
 
 uvel.astype(binprec).tofile('uinit.box')
 vvel.astype(binprec).tofile('vinit.box')
@@ -255,14 +302,14 @@ qair.astype(binprec).tofile('d2.box')
 
 
 #====== figures ========
-vmin = np.min(vvel)
-vcont = np.linspace(vmin,-vmin,6)
-
-plt.figure()
-plt.contourf(xx*1e-3,-zc,theta[:,int(si_y/2),:],20)
-plt.colorbar(label="Theta (K)")
-plt.contour(xx*1e-3,-zc,vvel[:,int(si_y/2),:],vcont,colors='k')
-plt.xlabel("x (km)")
-plt.ylabel("z (m)")
-plt.title("Temperature (color) and velocity (contours)")
-plt.savefig("surf_eddy.png")
+if flag_plot:
+  vcont = np.linspace(-np.abs(vmax),np.abs(vmax),10)
+  
+  plt.figure()
+  plt.contourf(xx*1e-3,-zc,theta[:,:,int(si_x/2)],20)
+  plt.colorbar(label="Theta (K)")
+  plt.contour(xx*1e-3,-zc,uvel[:,:,int(si_x/2)],vcont,colors='k',linewidths=1)
+  plt.xlabel("x (km)")
+  plt.ylabel("z (m)")
+  plt.title("Temperature (color) and velocity (contours)")
+  plt.savefig("surf_eddy.png")
