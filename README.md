@@ -4,14 +4,19 @@ Set of MITgcm runs
 
 ## install MITgcm from scratch
 
+* Installation prerequisites on any debian-like system (ubuntu, etc.)
+sudo apt-get install gfortran
+sudo apt-get install libnetcdff-dev libnetcdf-dev
+sudo apt-get install python-numpy python-matplotlib
 
 
 * Dowload MITgcm in a local directory 
 ```
 git clone https://github.com/MITgcm/MITgcm.git
 cd MITgcm
-echo "export MITGCMDIR=$PWD" >> ~/.bashrc
-echo "export PATH=\$PATH:\$MITGCMDIR/tools" >> ~/.bashrc
+echo "export MITGCM_ROOTDIR=$PWD" >> ~/.bashrc
+echo "export PATH=\$PATH:\$MITGCM_ROOTDIR/tools" >> ~/.bashrc
+cd ..
 ```
 
 * In a separate repository get mitgcm_configs
@@ -33,7 +38,7 @@ mkdir run
 * Build mitgcm
 
 At this point you need a fortran compiler (and openmpi for big runs)
-Iin most HPC configurations, you will need to load the appropriate module. Check
+In most HPC configurations, you will need to load the appropriate module. Check
 ```
 module avail
 ```
