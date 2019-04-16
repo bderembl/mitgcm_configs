@@ -3,7 +3,7 @@
  useOBCS=.FALSE.,
  useRBCS=.TRUE.,
  useMNC=.TRUE.,
- useDIAGNOSTICS=.FALSE.,
- useggl90=.FALSE.,
+ useDIAGNOSTICS=.TRUE.,
+ useKPP=.TRUE.,
  useCHEAPAML=.FALSE.,
  &
