@@ -17,6 +17,7 @@ cd MITgcm
 echo "export MITGCM_ROOTDIR=$PWD" >> ~/.bashrc
 echo "export PATH=\$PATH:\$MITGCM_ROOTDIR/tools" >> ~/.bashrc
 cd ..
+source ~/.bashrc
 ```
 
 * In a separate repository get mitgcm_configs
