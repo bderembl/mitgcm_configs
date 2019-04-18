@@ -1,0 +1,10 @@
+* Float experiment
+
+This configuration is an idealized subtropical gyre. We use this
+configuration to highlight the differences between lagrangian
+trajectories and eddy tracking methods.
+
+** warning
+
+remove the files float_trajectories before each new model run
+
