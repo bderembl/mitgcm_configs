@@ -2,7 +2,7 @@
 # Float Namelist
 # *********************
  &FLT_NML
- flt_int_traj =  5000.,
+ flt_int_traj =  86400.,
  flt_int_prof =  0.,
  flt_noise    = 0.0001,
  flt_file     = 'flinit.box',

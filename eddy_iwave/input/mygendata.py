@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 import scipy.special, scipy.interpolate, scipy.integrate
 from scipy.interpolate import UnivariateSpline
-
+from mpl_toolkits.mplot3d import Axes3D
 plt.ion()
 
 binprec = '>f8'
@@ -14,10 +14,17 @@ flag_plot = 1
 flag_topo = 2 # 0: no topo, 1: sector topo, 2 topo everywhere
 
 #% ================== NEW GRID =====================================
+# for the high resolution run: change deltat in data and size.h
 
-si_x = 1000
-si_y = 1000
-si_z = 100
+# high resolution
+#si_x = 1000
+#si_y = 1000
+#si_z = 100
+
+# low resolution
+si_x = 200
+si_y = 200
+si_z = 20
 
 
 si_x1 = si_x + 1

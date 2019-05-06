@@ -8,7 +8,7 @@
  viscAh=1.E-2,
  viscAz=1.E-2,
  no_slip_sides=.FALSE.,
- no_slip_bottom=.FALSE.,
+ no_slip_bottom=.TRUE.,
  diffKhT=1.E-3,
  diffKzT=0.E-2,
 # corimap = 0 -> fplane
@@ -42,15 +42,14 @@
  &PARM03
  nIter0=0,
  endTime=8640000,
-# nTimeSteps=20,
- deltaT=15.0,
+ deltaT=30.0,
  abEps=0.01,
  pChkptFreq=0.0,
  chkptFreq=86400.0,
  dumpFreq=86400.0,
  monitorSelect=2,
  monitorFreq=86400.,
- pickupSuff='ckptA'
+# pickupSuff='ckptA'
  &
 
 # Gridding parameters
