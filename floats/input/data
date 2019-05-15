@@ -1,0 +1,75 @@
+#!sh 
+# ====================
+# | Model parameters |
+# ====================
+#
+# Continuous equation parameters
+ &PARM01
+# 50km
+# viscAh=10000.,   
+# diffKhT=10000.,  
+# diffKhS=10000.,  
+# viscAh=3000.,   
+# diffKhT=3000.,  
+# diffKhS=3000.,  
+ viscAh=500.,   
+ diffKhT=500.,  
+ diffKhS=500.,  
+ viscAz=1.e-4,
+ diffKzT=1.e-5,
+ diffKzS=1.e-5,
+ no_slip_sides=.TRUE.,
+ no_slip_bottom=.TRUE.,
+ f0=3.08e-5,
+ beta=2e-11,
+ eosType='LINEAR',
+ rigidLid=.FALSE.,
+ implicitFreeSurface=.TRUE.,
+ readBinaryPrec=32,
+ implicitviscosity=.TRUE.,
+ implicitDiffusion=.TRUE.,
+ saltStepping=.TRUE.,
+ tempStepping=.TRUE.,
+ useSingleCPUio=.TRUE.
+ &
+
+# Elliptic solver parameters
+ &PARM02
+ cg2dMaxIters=500,
+ cg2dTargetResidual=1.E-9,
+ &
+
+# Time stepping parameters
+ &PARM03
+ nIter0=0,
+ endTime=31104000000,
+ deltaT=500.0,
+ pChkptFreq=0.0,
+ chkptFreq=3600.0,
+ dumpFreq=31104000,
+ taveFreq=0,
+ monitorFreq=2592000.,
+ tauThetaClimRelax=2922857.,
+ &
+
+# Gridding parameters
+ &PARM04
+ usingCartesianGrid=.TRUE.,
+ delXfile='dx.box',
+ delYfile='dy.box',
+ delRFile='dz.box',
+ &
+ 
+# Input datasets
+ &PARM05
+ bathyFile='topog.box',
+ zonalwindfile='windx.box',
+ thetaClimFile='sstclim.box'
+ EmPmRFile='empmr.box'
+ hydrogThetaFile='tinit.box',
+ hydrogSaltFile='sinit.box',
+ uVelInitFile='uinit.box',
+ vVelInitFile='vinit.box',
+ pSurfInitFile='einit.box',
+ checkIniTemp=.FALSE.,
+ &

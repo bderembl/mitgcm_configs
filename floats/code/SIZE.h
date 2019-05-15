@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/verification/cpl_aim+ocn/code_ocn/SIZE.h,v 1.1 2003/12/15 21:04:09 jmc Exp $
-C $Name: checkpoint65i $
-
 C
 C     /==========================================================\
 C     | SIZE.h Declare size of underlying computational grid.    |
@@ -37,17 +34,17 @@ C     Nr  - No. points in Z for full process domain.
       INTEGER Ny
       INTEGER Nr
       PARAMETER (
-     &           sNx =  200,
-     &           sNy =  200,
-     &           OLx =   2,
-     &           OLy =   2,
+     &           sNx =  100,
+     &           sNy =  100,
+     &           OLx =   3,
+     &           OLy =   3,
      &           nSx =   1,
      &           nSy =   1,
-     &           nPx =   1,
-     &           nPy =   1,
+     &           nPx =   8,
+     &           nPy =   8,
      &           Nx  = sNx*nSx*nPx,
      &           Ny  = sNy*nSy*nPy,
-     &           Nr  =  20)
+     &           Nr  =  33)
 
 C     MAX_OLX  - Set to the maximum overlap region size of any array
 C     MAX_OLY    that will be exchanged. Controls the sizing of exch

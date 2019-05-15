@@ -4,6 +4,6 @@
  useRBCS=.TRUE.,
  useMNC=.TRUE.,
  useDIAGNOSTICS=.TRUE.,
- useggl90=.FALSE.,
+ useKPP=.TRUE.,
  useCHEAPAML=.FALSE.,
  &
