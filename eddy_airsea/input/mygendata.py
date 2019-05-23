@@ -11,7 +11,7 @@ binprec = '>f4'
 
 flag_plot = 0
 flag_bt = 0  # 1: barotropic vortex, 0: baroclinic vortex
-flag_eddy = 2 # 1: isolated eddy, 2: modon
+flag_eddy = 1 # 1: isolated eddy, 2: modon
 flag_surf = 0 # 0: non perturbated surface field
 
 # # physical constants
@@ -38,8 +38,8 @@ def stretch(xf,yf,Lx,si_x,rev):
   xc = xf[0:-1] + 0.5*dx
   return xc,xf,dx
 
-si_x = 250
-si_y = 250
+si_x = 100
+si_y = 100
 si_z = 20
 
 si_x1 = si_x + 1
@@ -283,7 +283,7 @@ trelax.astype(binprec).tofile('trelax.box')
 
 # ==== atmospheric files
 u0 = 10  # m/s
-v0 = 10  # m/s
+v0 = 0  # m/s
 s0 = 240
 t2 = 15
 q2 = 1e-3

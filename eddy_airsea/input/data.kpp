@@ -1,6 +1,6 @@
 #!sh
  &KPP_PARM01
- KPPwriteState=.FALSE.,
+ KPPwriteState=.TRUE.,
  minKPPhbl = 10.,
  Ricr = 0.45,
  &
