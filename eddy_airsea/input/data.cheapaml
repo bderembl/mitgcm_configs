@@ -28,4 +28,6 @@
  usetimevarblh=.FALSE.,
  useclouds=.FALSE.,
  usedlongwave=.FALSE.,
+ cheapamlXperiodic=.TRUE.,
+ cheapamlYperiodic=.TRUE.,
  &
