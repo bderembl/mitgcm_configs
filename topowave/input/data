@@ -11,9 +11,9 @@
 # bottomDragQuadratic=0.003, # for log layer
  no_slip_sides=.FALSE.,
  no_slip_bottom=.TRUE.,
- diffKhT=2.e0,
- diffKzT=2.e0,
- diffK4T=2.0e5,
+ diffKhT=0.5,
+ diffKzT=0.5,
+ diffK4T=5.0e4,
  f0=0.0,
  eosType='LINEAR',
 # tempAdvScheme=33,
