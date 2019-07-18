@@ -44,7 +44,7 @@
  &PARM03
  nIter0=0,
  endTime=86400,
- deltaT=0.5,
+ deltaT=0.2,
  abEps=0.1,
  pChkptFreq=0.0,
  chkPtFreq=0.0,
