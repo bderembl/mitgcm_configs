@@ -8,26 +8,29 @@ import scipy.io.netcdf as netcdf
 import spoisson 
 from scipy import interpolate
 from scipy.interpolate import interp1d
+import glob
 
 plt.ion()
 
-binprec = '>f8'
+binprec = '>f4'
 
-flag_conf = 0 # 0: s, 1: g
+flag_conf = 2 # 0: samelson, 1: grooms 2: basilisk
 
 #% ================== GRID =====================================
 rSphere = 6370.e3
 deg2m = 2*np.pi*rSphere/360.0
 gg = 9.8
 
-#si_x = 60
-#si_y = 60
-si_x = 720
-si_y = 720
+si_x = 100
+si_y = 100
+#si_x = 720
+#si_y = 720
 if flag_conf == 0:
   si_z = 33
 elif flag_conf == 1:
   si_z = 31
+elif flag_conf == 2:
+  si_z = 30
 
 
 si_x1 = si_x + 1
@@ -39,8 +42,10 @@ if flag_conf == 0 :
   Ly = 5000.0e3
 elif flag_conf == 1:
   Lx = 3000.0e3
-
   Ly = 3000.0e3
+elif flag_conf == 2:
+  Lx = 5000.0e3
+  Ly = 5000.0e3
 
 dx = Lx/si_x;
 dy = Ly/si_y;
@@ -80,6 +85,8 @@ elif flag_conf == 1:
   dz1[16:21] = 150.
   dz1[21:26] = 200.
   dz1[26:]   = 250.
+elif flag_conf == 2:
+  dz1 = 5000/si_z*np.ones((si_z))
 
 # # 1 layer configuration
 # si_z = 1
@@ -106,6 +113,9 @@ if flag_conf == 0:
 elif flag_conf == 1:
   fMin = 4.5e-5
   fMax = 1.0e-4
+if flag_conf == 2:
+  fMin = 3.e-05
+  fMax = 1.3e-4
 
 fmid = 0.5*(fMin + fMax)
   
@@ -139,6 +149,9 @@ if flag_conf == 0:
 elif flag_conf == 1:
   TS = 22.0
   TN = 2.0
+elif flag_conf == 2:
+  TS = 22.0
+  TN = 2.0
 
 sst = (TN-TS)*yg/Ly + TS
 
@@ -161,8 +174,10 @@ windx = np.zeros((si_y,si_x));
 
 if flag_conf == 0:
   tauW = 0.4
-elif flag_conf == 0:
+elif flag_conf == 1:
   tauW = 0.2
+elif flag_conf == 2:
+  tauW = 0.4
 windx = -tauW*np.sin(2*np.pi*yg/Ly )
 
 windx = windx*ff.reshape(si_y,1)/fMin
@@ -211,18 +226,53 @@ temp_i.astype(binprec).tofile('tref.box')
 
 #### from PG ###
 
-dir0 = './'
-file1 = 'var_proj_s.nc'
+dir0 = './data_input/'
+if flag_conf == 0:
 
+  file1 = 'var_proj_s.nc'
+  
+  f1 = netcdf.netcdf_file(dir0 + file1,'r')
+  
+  uvel  = f1.variables['u' ][:,:,:].copy()
+  vvel  = f1.variables['v' ][:,:,:].copy()
+  theta = f1.variables['ti'][:,:,:].copy()
+  
+elif flag_conf == 2:
+  # PG scales
+  #L = 5000e3  # m
+  H = 5000    # m
+  beta = 2.0e-11 # 1/m/s
+  N2 = 1e-6  #  (1/s**2)
+  Bs = N2*H
+  Thetas = Bs/10/2e-4 # 1/g alpha
+  Us = N2*H**2/(beta*Lx**2)
+  fnot = 3e-5
+  gg = 9.80665 # nemo value
+  
+  ff = fnot + beta*yg # should be at u and v points
+  fmid = fnot + 0.5*Ly*beta  
+  
+  fileb = 'b*'
+  fileu = 'u*'
+  
+  allfilesb = sorted(glob.glob(dir0 + fileb));
+  allfilesu = sorted(glob.glob(dir0 + fileu));
+  
+  # dimensions
+  b = np.fromfile(allfilesb[0],'f4')
+  N = int(b[0])
+  N1 = N + 1
+  nl2 = int(len(b)/N1**2)
+  nl = nl2 - 2
+  
+  b = np.fromfile(allfilesb[-1],'f4').reshape(nl2,N1,N1).transpose(0,2,1)
+  uv = np.fromfile(allfilesu[-1],'f4').reshape(2*nl2,N1,N1).transpose(0,2,1)
+  
+  theta = Thetas*(b[1:-1,1:,1:] - b.min()) + 2.0
+  uvel = Us*uv[2:-2:2,1:,1:]
+  vvel = Us*uv[3:-2:2,1:,1:]
 
-
-f1 = netcdf.netcdf_file(dir0 + file1,'r')
-
-uvel  = f1.variables['u' ][:,:,:].copy()
-vvel  = f1.variables['v' ][:,:,:].copy()
-theta = f1.variables['ti'][:,:,:].copy()
-
-
+  
 si_zpg,si_ypg,si_xpg = theta.shape
 dxpg = dx*si_x/si_xpg
 
@@ -260,16 +310,16 @@ theta_n = np.zeros((si_z,si_y,si_x))
 eta_n = np.zeros((si_y,si_x))
 
 for nz in range(0,si_z):
-  fint = interpolate.interp2d(xx, yy,uvel[nz,:,:], kind='linear')
+  fint = interpolate.interp2d(xx, yy,uvel[nz,:,:], kind='cubic')
   uvel_n[nz,:,:] = fint(xn,yn)
   
-  fint = interpolate.interp2d(xx, yy,vvel[nz,:,:], kind='linear')
+  fint = interpolate.interp2d(xx, yy,vvel[nz,:,:], kind='cubic')
   vvel_n[nz,:,:] = fint(xn,yn)
 
-  fint = interpolate.interp2d(xx, yy,theta[nz,:,:], kind='linear')
+  fint = interpolate.interp2d(xx, yy,theta[nz,:,:], kind='cubic')
   theta_n[nz,:,:] = fint(xn,yn)
 
-fint = interpolate.interp2d(xx, yy,eta, kind='linear')
+fint = interpolate.interp2d(xx, yy,eta, kind='cubic')
 eta_n = fint(xn,yn)
 
 #np.savetxt('upg.dat',uvel_n[0,:,:])
@@ -280,3 +330,10 @@ vvel_n.astype(binprec).tofile('vinit.box')
 theta_n.astype(binprec).tofile('tinit.box')
 
 eta_n.astype(binprec).tofile('einit.box')
+
+#---------------------
+# ------ RBCS --------
+#---------------------
+
+tmask  = np.ones((si_z,si_y,si_x))
+tmask.astype(binprec).tofile('tmask.box')

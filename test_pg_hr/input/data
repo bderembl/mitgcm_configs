@@ -6,30 +6,31 @@
  &PARM01
 # sRefFile='sref.box',
  tRefFile='tref.box',
- viscAh=100.E0,
- viscA4=5.E9,
+ viscAh=10000.E0,
  viscAz=1.E-5,
  no_slip_sides=.TRUE.,
  no_slip_bottom=.TRUE.,
- diffKhT=100.E0,
+ diffKhT=10000.E0,
  diffKzT=1.E-5,
 # corimap = 0 -> fplane
- f0=3.78e-5,
- beta=1.84E-11,
+ f0=3.e-5,
+ beta=2.E-11,
  eosType='LINEAR',
  tAlpha=2.E-4,
  sBeta =0.E-4,
- rigidLid=.TRUE.,
- implicitFreeSurface=.FALSE.,
+ rigidLid=.FALSE.,
+ implicitFreeSurface=.TRUE.,
  hFacMin=0.0,
  nonHydrostatic=.FALSE.,
- readBinaryPrec=64,
- tempAdvScheme=33,
+ readBinaryPrec=32,
  staggerTimeStep=.TRUE.
  implicitDiffusion=.TRUE.,
  implicitviscosity=.TRUE.,
+ useJamartWetPoints=.TRUE.,
+ useEnergyConservingCoriolis=.TRUE.,
  saltStepping=.FALSE.,
-# momAdvection=.FALSE.,
+ tempStepping=.TRUE.,
+ momAdvection=.TRUE.,
  &
 
 # Elliptic solver parameters
@@ -43,16 +44,19 @@
 # Time stepping parameters
  &PARM03
  nIter0=0,
- endTime=864000000,
- deltaT=360.0,
+ endTime=36000000,
+# endTime=864000000,
+# deltaT=360.0,
+ deltaT=1200.0,
  abEps=0.01,
  pChkptFreq=0.0,
  chkptFreq=0.0,
- dumpFreq=2592000,
+ dumpFreq=360000,
+# dumpFreq=2592000,
  taveFreq=0,
  monitorSelect=2,
  monitorFreq=2592000.,
- tauThetaClimRelax=2922857.,
+# tauThetaClimRelax=2922857.,
  &
 
 # Gridding parameters
@@ -70,7 +74,7 @@
  uVelInitFile='uinit.box',
  vVelInitFile='vinit.box',
  pSurfInitFile='einit.box',
- zonalwindfile='windx.box',
- thetaClimFile='sstclim.box'
+# zonalwindfile='windx.box',
+# thetaClimFile='sstclim.box'
 # surfQfile='Qnet.forcing',
  &

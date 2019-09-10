@@ -1,7 +1,8 @@
 #!/usr/bin/bash Packages
  &PACKAGES
  useMNC=.TRUE.,
- useggl90=.TRUE.,
+ useRBCS=.TRUE.,
+ useggl90=.FALSE.,
  usegmredi=.FALSE.,
  useDIAGNOSTICS=.FALSE.,
  &
