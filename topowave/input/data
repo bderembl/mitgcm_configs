@@ -11,9 +11,9 @@
 # bottomDragQuadratic=0.003, # for log layer
  no_slip_sides=.FALSE.,
  no_slip_bottom=.TRUE.,
- diffKhT=2.e0,
- diffKzT=2.e0,
- diffK4T=2.0e5,
+ diffKhT=0.5,
+ diffKzT=0.5,
+ diffK4T=5.0e4,
  f0=0.0,
  eosType='LINEAR',
 # tempAdvScheme=33,
@@ -44,7 +44,7 @@
  &PARM03
  nIter0=0,
  endTime=86400,
- deltaT=0.5,
+ deltaT=0.2,
  abEps=0.1,
  pChkptFreq=0.0,
  chkPtFreq=0.0,

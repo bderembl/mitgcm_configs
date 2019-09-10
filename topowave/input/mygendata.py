@@ -12,14 +12,14 @@ Lz = 50000       # total depth
 Lx = 60000     # length of the domain
 Ly = 1.0       # length of the tank  (y)
 gg = 9.81      # gravity
-rho0z = 5.1e-5   # stratification (d rho /dz)
+rho0z = 16.3e-4   # stratification (d rho /dz)
 u0z = 1e-3     # vertical shear (du/dz) s-1
 alphaK = 2.0e-4
 rho0 = 1e3
 nu = 1.0
 # topography
 L0 = 1000   # m
-H0 = 149.5 # m not exactly 100m to avoid discretization issue
+H0 = 150 # m not exactly 100m to avoid discretization issue
 
 
 # ========== grid =========
@@ -28,15 +28,7 @@ def stretch(xf,yf,Lx,si_x,rev):
 
   hh = np.linspace(0,1,si_x+1)
   xf = Lx*np.interp(hh,xf,yf)
-  
-  # smooth
-  nc = int(si_x/10)
-  if nc % 2 == 0:
-    nc = nc + 1
-  zz2 = np.convolve(xf, np.ones((nc,))/nc, mode='valid')
-  
-  xf[int((nc-1)/2):int(-(nc-1)/2)] = zz2
-  
+
   dx = np.diff(xf)
 
   # reverse order to get high resolution near the bottom
@@ -60,17 +52,27 @@ dy1 = np.ones((si_y))
 yy = Ly*(np.arange(0,si_y) + 0.5)/(1.0*si_y)
 yy1 = Ly*(np.arange(0,si_y+1) )/(1.0*si_y)
 
-# xf is % of grid points
-xf = [0, 0.4, 0.6, 0.8, 0.9, 1]
-# yf is % of thickness
-yf = [0, 0.08, 0.14, 0.21, 0.4, 1]
+# # xf is % of grid points
+# xfz = [0, 0.4, 0.6, 0.8, 0.9, 1]
+# # yf is % of thickness
+# yfz = [0, 0.08, 0.14, 0.21, 0.4, 1]
 
-zc,zf,dz1 = stretch(xf,yf,Lz,si_z,1)
+slope = 5
+xfz = np.linspace(0,1,1000)
+yfz = np.sinh(slope*xfz)/np.sinh(slope)
 
-# xf is % of grid points
-xf = [0, 0.2, 0.8, 1]
-# yf is % of thickness
-yf = [0, 0.4, 0.6, 1]
+zc,zf,dz1 = stretch(xfz,yfz,Lz,si_z,1)
+
+# # xf is % of grid points
+# xf = [0, 0.2, 0.8, 1]
+# # yf is % of thickness
+# yf = [0, 0.4, 0.6, 1]
+
+slope = 3
+xf = np.linspace(-1,1,2000)
+yf = (np.sinh(slope*xf) + np.sinh(slope))/(2*np.sinh(slope))
+xf = (xf + 1)/2
+
 xx,xx1,dx1 = stretch(xf,yf,Lx,si_x,0)
 
 
@@ -90,7 +92,6 @@ dz1.astype(binprec).tofile('dz.box')
 h_mit = -Lz + np.zeros((si_y,si_x))
 
 x0 = Lx/2  # m
-#H0 = 99.5 # m not exactly 100m to avoid discretization issue 
 
 h_mit = h_mit + H0*(np.exp(-(xg-x0)**2/(2*L0**2)))  #H0/(1+(xg-x0)**2/(2*L0**2))
 h_mit.astype(binprec).tofile('topo.box')
@@ -135,7 +136,7 @@ tmask[-1,:,:] = 1.0
 
 # upper sponge
 tmask4 = np.zeros((si_z,si_y,si_x)) + zf[:-1].reshape(si_z,1,1)
-Hsponge = 5000
+Hsponge = Lz - 10*L0
 tmask5 = -tmask4/Hsponge + 1
 tmask5 = np.where(tmask5<0,0,tmask5)
 tmask5 = tmask5**2
