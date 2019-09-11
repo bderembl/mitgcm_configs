@@ -14,8 +14,10 @@ sudo apt-get install python-numpy python-matplotlib
 ```
 git clone https://github.com/MITgcm/MITgcm.git
 cd MITgcm
+echo "  " >> ~/.bashrc  # empty line (safety)
 echo "export MITGCM_ROOTDIR=$PWD" >> ~/.bashrc
 echo "export PATH=\$PATH:\$MITGCM_ROOTDIR/tools" >> ~/.bashrc
+echo "export PATH=\$PATH:\$MITGCM_ROOTDIR/utils/python/MITgcmutils/scripts" >> ~/.bashrc
 cd ..
 source ~/.bashrc
 ```
@@ -57,7 +59,7 @@ genmake2 -mods=../code (-mpi)
 make depend
 make -j4
 ```
-(Use the '-mpi' option for parallel runs)
+(Use the '-mpi' option for parallel runs. If genmaka2 returns an erros, you may have to adjust set the variable MPI_HOME in your .bashrc; use the command which mpif77 to check where this folder is)
 
 
 * Create init files 
