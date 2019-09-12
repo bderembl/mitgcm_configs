@@ -340,6 +340,10 @@ eta_n.astype(binprec).tofile('einit.box')
 tmask  = np.ones((si_z,si_y,si_x))
 tmask.astype(binprec).tofile('tmask.box')
 
+# relax to initial conditions
+theta_n.astype(binprec).tofile('trelax.box')
+
+
 # compute relaxation length scale
 
 N2 = -gg*alphaT*np.diff(theta_n,axis=0)/dz2
@@ -355,3 +359,11 @@ for nx in range(0,si_x):
     filt_len[ny,nx] = np.min([10*rd[1],lmax])
 
 filt_len.astype(binprec).tofile('filter_length.box')
+
+# # temporary
+# tinit = np.random.rand(si_z,si_y,si_x)
+# tinit.astype(binprec).tofile('tinit.box')
+
+# trelax = np.zeros((si_z,si_y,si_x))
+# trelax.astype(binprec).tofile('trelax.box')
+

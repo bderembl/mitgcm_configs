@@ -21,7 +21,7 @@
 # diag_mnc     = .FALSE.,
 #--
   fileName(1) = 'oceDiag',
-  frequency(1) = 2592000.,
+  frequency(1) = 360000.,
   fields(1,1)  = 'gT_Forc '
  &
 

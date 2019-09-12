@@ -50,9 +50,10 @@ C      copyt fieldout in case max_iter = -1
         ENDDO
       ENDDO
 
-      _EXCH_XY_RL(tmp,myThid)
-
       DO kit=1,max_iter_filter
+
+        _EXCH_XY_RL(tmp,myThid)
+
         DO j=1,sNy
           DO i=1,sNx
             tmp2(i,j) = maskC(i,j,k,bi,bj)
@@ -85,9 +86,6 @@ C      copyt fieldout in case max_iter = -1
             ENDIF
           ENDDO
         ENDDO
-
-        _EXCH_XY_RL(tmp,myThid)
-
       ENDDO ! kiter loop
 
       _EXCH_XY_RL(fieldout,myThid)      

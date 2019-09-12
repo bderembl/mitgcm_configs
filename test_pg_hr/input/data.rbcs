@@ -1,9 +1,9 @@
 #!sh RBCS package parameters:
 &RBCS_PARM01
- tauRelaxT=3600.,
+ tauRelaxT=36000.,
  relaxMaskFile='tmask.box',
  useRBCtemp=.TRUE.,
- relaxTFile='tinit.box',
+ relaxTFile='trelax.box',
  &
 
 # RBCS for pTracers (read this namelist only when ptracers pkg is compiled)
@@ -14,5 +14,5 @@
  &RBCS_PARM03
  useRBCfilter=.TRUE.,
  filterlengthFile='filter_length.box'
-# filterlength=5000
+# filterlength=500000
  &
