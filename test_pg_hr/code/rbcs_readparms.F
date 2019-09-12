@@ -277,6 +277,15 @@ c       ENDIF
         ENDIF
        ENDIF
       ENDDO
+      IF ( filterlengthFile.NE. ' ' .AND.
+     $   filterlength.EQ.0.) THEN
+        WRITE(msgBuf,'(2A)') 'RBCS_READPARMS: ',
+     &     'You need to set filterlength as the max length scale',
+     &     'if you provide filterlengthFile'
+        CALL PRINT_ERROR( msgBuf, myThid )
+        STOP 'ABNORMAL END: S/R RBCS_READPARMS'        
+      ENDIF
+      
 #endif
       _END_MASTER(myThid)
 

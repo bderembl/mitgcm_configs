@@ -42,8 +42,8 @@ C !LOCAL VARIABLES: ====================================================
       _RL kiter(1-OLx:sNx+OLx,1-OLy:sNy+OLy)
       _RL psi
 
-      DO j=1,sNy
-        DO i=1,sNx
+      DO j=1-OLy,sNy+OLy
+        DO i=1-OLx,sNx+OLx
           tmp(i,j) = fieldin(i,j)
 C      copyt fieldout in case max_iter = -1
           fieldout(i,j) = fieldin(i,j) 
@@ -78,8 +78,8 @@ C      copyt fieldout in case max_iter = -1
           ENDDO
         ENDDO
 
-        DO j=1,sNy
-          DO i=1,sNx
+      DO j=1-OLy,sNy+OLy
+        DO i=1-OLx,sNx+OLx
             tmp(i,j) = tmp2(i,j)
             if (kit.EQ.RBC_filter_kiter(i,j,bi,bj)) THEN
               fieldout(i,j) = tmp2(i,j)

@@ -287,6 +287,9 @@ C        end bi,bj loops
          ENDDO
         ENDDO
 
+        max_iter_filter = MAX(2, FLOOR(12*(filterlength/3
+     $              *_recip_dxC(1,1,1,1))**2/(3**2-1)))
+
 C read in filtering length scale
        IF ( filterlengthFile.NE. ' ' ) THEN
          CALL READ_FLD_XY_RS( filterlengthFile, ' ',
@@ -311,9 +314,9 @@ C!!   ASSUME ISOTROPIC GRID !!
                  RBC_filter_kiter(i,j,bi,bj) = 
      $              MAX(2, FLOOR(12*(RBC_filter_len(i,j,bi,bj)/3
      $              *_recip_dxC(i,j,bi,bj))**2/(3**2-1)))
-                 IF (RBC_filter_kiter(i,j,bi,bj)> max_iter_filter) THEN
-                   max_iter_filter = RBC_filter_kiter(i,j,bi,bj)
-                 ENDIF
+C                 IF (RBC_filter_kiter(i,j,bi,bj)> max_iter_filter) THEN
+C                   max_iter_filter = RBC_filter_kiter(i,j,bi,bj)
+C                 ENDIF
                ENDDO
              ENDDO
              
