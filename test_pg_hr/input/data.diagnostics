@@ -20,9 +20,9 @@
  &DIAGNOSTICS_LIST
 # diag_mnc     = .FALSE.,
 #--
-  fields(1,1)  = 'momVort3'
   fileName(1) = 'oceDiag',
-  frequency(1) = 86400.,
+  frequency(1) = 2592000.,
+  fields(1,1)  = 'gT_Forc '
  &
 
 #--------------------

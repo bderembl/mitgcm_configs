@@ -4,5 +4,5 @@
  useRBCS=.TRUE.,
  useggl90=.FALSE.,
  usegmredi=.FALSE.,
- useDIAGNOSTICS=.FALSE.,
+ useDIAGNOSTICS=.TRUE.,
  &

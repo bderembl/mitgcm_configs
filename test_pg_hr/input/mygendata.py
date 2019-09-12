@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io.netcdf as netcdf
 import spoisson 
+import def_radius
 from scipy import interpolate
 from scipy.interpolate import interp1d
 import glob
@@ -20,6 +21,7 @@ flag_conf = 2 # 0: samelson, 1: grooms 2: basilisk
 rSphere = 6370.e3
 deg2m = 2*np.pi*rSphere/360.0
 gg = 9.8
+alphaT = 2e-4
 
 si_x = 100
 si_y = 100
@@ -244,7 +246,7 @@ elif flag_conf == 2:
   beta = 2.0e-11 # 1/m/s
   N2 = 1e-6  #  (1/s**2)
   Bs = N2*H
-  Thetas = Bs/10/2e-4 # 1/g alpha
+  Thetas = Bs/gg/alphaT # 1/g alpha
   Us = N2*H**2/(beta*Lx**2)
   fnot = 3e-5
   gg = 9.80665 # nemo value
@@ -337,3 +339,19 @@ eta_n.astype(binprec).tofile('einit.box')
 
 tmask  = np.ones((si_z,si_y,si_x))
 tmask.astype(binprec).tofile('tmask.box')
+
+# compute relaxation length scale
+
+N2 = -gg*alphaT*np.diff(theta_n,axis=0)/dz2
+N2_min = 1e-7
+N2 = np.where(N2<N2_min, N2_min, N2)
+
+gp = N2*dz2
+lmax = Lx/10
+filt_len = np.zeros((si_y,si_x))
+for nx in range(0,si_x):
+  for ny in range(0,si_y):
+    rd = def_radius.cal_rad(dz1,gp[:,ny,nx],ff[ny,nx])
+    filt_len[ny,nx] = np.min([10*rd[1],lmax])
+
+filt_len.astype(binprec).tofile('filter_length.box')
