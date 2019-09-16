@@ -23,7 +23,8 @@
  hFacMin=0.0,
  nonHydrostatic=.FALSE.,
  readBinaryPrec=32,
- staggerTimeStep=.TRUE.
+ staggerTimeStep=.TRUE.,
+ tempAdvScheme=33,
  implicitDiffusion=.TRUE.,
  implicitviscosity=.TRUE.,
  useJamartWetPoints=.TRUE.,
