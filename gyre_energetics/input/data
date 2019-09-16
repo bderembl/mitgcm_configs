@@ -20,7 +20,7 @@
  implicitviscosity=.TRUE.,
  implicitDiffusion=.TRUE.,
  saltStepping=.FALSE.,
- tempStepping=.FALSE.,
+# tempStepping=.FALSE.,
  &
 
 # Elliptic solver parameters
@@ -36,7 +36,7 @@
  deltaT=1200.0,
  pChkptFreq=0.0,
  chkptFreq=0.0,
- dumpFreq=31104000,
+ dumpFreq=86400,
  taveFreq=0,
  monitorFreq=2592000.,
  tauThetaClimRelax=2922857.,

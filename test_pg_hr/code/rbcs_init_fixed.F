@@ -299,6 +299,7 @@ C read in filtering length scale
 
 
 C!!   ASSUME ISOTROPIC GRID !!
+C     REF: Fast Almost-Gaussian Filtering  Peter Kovesi
 
       ! sigma^2 = n(w^2 - 1)/12
       ! -> n = 12*sigma^2/(w^2 - 1)
