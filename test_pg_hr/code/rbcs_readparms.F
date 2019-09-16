@@ -85,7 +85,8 @@ C--   RBCS parameters:
       NAMELIST /RBCS_PARM03/
      &          useRBCfilter,
      &          filterlength,
-     &          filterlengthFile
+     &          filterlengthFile,
+     &          box_filter_size
 
 
 C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
@@ -140,7 +141,7 @@ C--   Default values
       useRBCfilter = .FALSE.
       filterlength = 0.
       filterlengthFile = ' '
-      
+      box_filter_size = 1      
 
 C--   Open and read the data.rbcs file
 
@@ -277,16 +278,22 @@ c       ENDIF
         ENDIF
        ENDIF
       ENDDO
+#endif
       IF ( filterlengthFile.NE. ' ' .AND.
-     $   filterlength.EQ.0.) THEN
-        WRITE(msgBuf,'(2A)') 'RBCS_READPARMS: ',
-     &     'You need to set filterlength as the max length scale',
-     &     'if you provide filterlengthFile'
+     $   filterlength.NE.0.) THEN
+        WRITE(msgBuf,'(3A)') 'RBCS_READPARMS: ',
+     &     'You must set either filterlength (uniform scale)',
+     &     'or filterlengthFile (variable)'
         CALL PRINT_ERROR( msgBuf, myThid )
         STOP 'ABNORMAL END: S/R RBCS_READPARMS'        
       ENDIF
       
-#endif
+      IF (box_filter_size.GT.OLx.OR.box_filter_size.GT.OLy) THEN
+        WRITE(msgBuf,'(3A)') 'RBCS_READPARMS: ',
+     $     'you must set box_filter_size<=OLx,OLy'
+        CALL PRINT_ERROR( msgBuf, myThid )
+        STOP 'ABNORMAL END: S/R RBCS_READPARMS'
+      ENDIF
       _END_MASTER(myThid)
 
 C Everyone else must wait for the parameters to be loaded

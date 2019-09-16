@@ -11,7 +11,7 @@ from scipy import interpolate
 from scipy.interpolate import interp1d
 import glob
 
-plt.ion()
+#plt.ion()
 
 binprec = '>f4'
 
@@ -351,12 +351,20 @@ N2_min = 1e-7
 N2 = np.where(N2<N2_min, N2_min, N2)
 
 gp = N2*dz2
-lmax = Lx/10
+lmax = 250e3
 filt_len = np.zeros((si_y,si_x))
 for nx in range(0,si_x):
   for ny in range(0,si_y):
     rd = def_radius.cal_rad(dz1,gp[:,ny,nx],ff[ny,nx])
     filt_len[ny,nx] = np.min([10*rd[1],lmax])
+
+# relaxation near the boundaries
+def shape(x,sigma):
+  return (1-np.exp(-x**2/(2*sigma**2)))
+
+dist = Lx/12
+filt_bdy = lmax*shape(xg,dist)*shape(xg-Lx,dist)*shape(yg,dist)*shape(yg-Lx,dist)
+filt_len = np.where(filt_len<filt_bdy, filt_len, filt_bdy)
 
 filt_len.astype(binprec).tofile('filter_length.box')
 

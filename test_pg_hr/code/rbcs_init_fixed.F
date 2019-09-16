@@ -38,9 +38,12 @@ C     msgBuf      :: Informational/error message buffer
       INTEGER irbc, iLen
       CHARACTER*(MAX_LEN_MBUF) msgBuf
       CHARACTER*(12) filName
+      INTEGER iG, jG
 #ifdef ALLOW_PTRACERS
       INTEGER iTr
 #endif
+      _RL max_iter_rl
+      INTEGER min_iter
 
 C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
 C     Report RBCS mask setting
@@ -268,6 +271,13 @@ C--   Apply mask:
       ENDDO
 
 
+!     minimum of 2 iterations 
+!     (numerical instability for a box filter only (=1 iter))
+       min_iter = 0
+       IF (box_filter_size.EQ.1) THEN
+         min_iter = 2
+       ENDIF
+       
 C     Filter length scale
 
       max_iter_filter = -1
@@ -279,17 +289,68 @@ C        Initialize arrays in common blocks :
             DO j=1-OLy,sNy+OLy
              DO i=1-OLx,sNx+OLx
                RBC_filter_len(i,j,bi,bj) = filterlength
-               RBC_filter_kiter(i,j,bi,bj) = 2
+               RBC_filter_kiter(i,j,bi,bj) = min_iter
+               DO k=1,Nr
+                 RBC_mask_bdy(i,j,k,bi,bj) = maskC(i,j,k,bi,bj)
+               ENDDO
              ENDDO
             ENDDO
 
 C        end bi,bj loops
          ENDDO
         ENDDO
+        
+C     adjust mask at boundary   (FOR NON PERIODIC DOMAIN ONLY!!)
+C     TODO: do periodic domains     
 
-        max_iter_filter = MAX(2, FLOOR(12*(filterlength/3
-     $              *_recip_dxC(1,1,1,1))**2/(3**2-1)))
+        DO bj = myByLo(myThid), myByHi(myThid)
+          DO bi = myBxLo(myThid), myBxHi(myThid)            
+            iG = 1 + myXGlobalLo-1+(bi-1)*sNx
+            IF (iG.EQ.1) THEN
+              DO j=1-OLy,sNy+OLy
+                DO i=1-OLx,1
+                  DO k=1,Nr
+                    RBC_mask_bdy(i,j,k,bi,bj) = 0.
+                  ENDDO
+                ENDDO
+              ENDDO
+            ENDIF
+            iG = sNx + myXGlobalLo-1+(bi-1)*sNx
+            IF (iG.GE.Nx) THEN
+              DO j=1-OLy,sNy+OLy
+                DO i=sNx,sNx+OLx
+                  DO k=1,Nr
+                    RBC_mask_bdy(i,j,k,bi,bj) = 0.
+                  ENDDO
+                ENDDO
+              ENDDO
+            ENDIF
 
+            jG = 1 + myYGlobalLo-1+(bj-1)*sNy
+            IF (jG.EQ.1) THEN
+              DO j=1-OLy,1
+                DO i=1-OLx,sNx+OLx
+                  DO k=1,Nr
+                    RBC_mask_bdy(i,j,k,bi,bj) = 0.
+                  ENDDO
+                ENDDO
+              ENDDO
+            ENDIF
+            jG = sNy + myYGlobalLo-1+(bj-1)*sNy
+            IF (jG.GE.Ny) THEN
+              DO j=sNy,sNy+OLy
+                DO i=1-OLx,sNx+OLx
+                  DO k=1,Nr
+                    RBC_mask_bdy(i,j,k,bi,bj) = 0.
+                  ENDDO
+                ENDDO
+              ENDDO
+            ENDIF
+
+C     end bi,bj loops
+          ENDDO
+        ENDDO
+        
 C read in filtering length scale
        IF ( filterlengthFile.NE. ' ' ) THEN
          CALL READ_FLD_XY_RS( filterlengthFile, ' ',
@@ -305,25 +366,27 @@ C     REF: Fast Almost-Gaussian Filtering  Peter Kovesi
       ! -> n = 12*sigma^2/(w^2 - 1)
 !     length_scale = 3*sigma
 
-!     minimum of 2 iterations 
-!     (numerical instability for a box filter only (=1 iter))
-
          DO bj = myByLo(myThid), myByHi(myThid)
            DO bi = myBxLo(myThid), myBxHi(myThid)
              DO j=1-OLy,sNy+OLy
                DO i=1-OLx,sNx+OLx
                  RBC_filter_kiter(i,j,bi,bj) = 
-     $              MAX(2, FLOOR(12*(RBC_filter_len(i,j,bi,bj)/3
-     $              *_recip_dxC(i,j,bi,bj))**2/(3**2-1)))
-C                 IF (RBC_filter_kiter(i,j,bi,bj)> max_iter_filter) THEN
-C                   max_iter_filter = RBC_filter_kiter(i,j,bi,bj)
-C                 ENDIF
+     $              MAX(min_iter, FLOOR(12*(RBC_filter_len(i,j,bi,bj)/3
+     $              *_recip_dxC(i,j,bi,bj))**2
+     $              /((2*box_filter_size+1)**2-1)))
+                 IF (RBC_filter_kiter(i,j,bi,bj)> max_iter_filter) THEN
+                   max_iter_filter = RBC_filter_kiter(i,j,bi,bj)
+                 ENDIF
                ENDDO
              ENDDO
              
 C     end bi,bj loops
            ENDDO
          ENDDO
+
+         max_iter_rl = 1.0*max_iter_filter
+         _GLOBAL_MAX_RL(max_iter_rl,myThid)
+         max_iter_filter = FLOOR(max_iter_rl)
 
 #ifndef DISABLE_RBCS_MOM
       IF ( useRBCuVel .AND. relaxMaskUFile.NE. ' ' ) THEN

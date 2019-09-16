@@ -35,60 +35,51 @@ C  myThid         :: my Thread Id number
       INTEGER myIter
       INTEGER myThid
 C !LOCAL VARIABLES: ====================================================
-      INTEGER i,j
+      INTEGER i,j,l,m
       INTEGER kit
       _RL tmp(1-OLx:sNx+OLx,1-OLy:sNy+OLy)
       _RL tmp2(1-OLx:sNx+OLx,1-OLy:sNy+OLy)
       _RL kiter(1-OLx:sNx+OLx,1-OLy:sNy+OLy)
-      _RL psi
+      _RL psi, mask_weight
 
       DO j=1-OLy,sNy+OLy
         DO i=1-OLx,sNx+OLx
           tmp(i,j) = fieldin(i,j)
-C      copyt fieldout in case max_iter = -1
+C      copy fieldout in case max_iter = -1
           fieldout(i,j) = fieldin(i,j) 
         ENDDO
       ENDDO
 
       DO kit=1,max_iter_filter
-
         _EXCH_XY_RL(tmp,myThid)
-
+        
         DO j=1,sNy
           DO i=1,sNx
-            tmp2(i,j) = maskC(i,j,k,bi,bj)
-     $         *(tmp(i+1,j+1)*maskC(i+1,j+1,k,bi,bj)
-     $         + tmp(i  ,j+1)*maskC(i  ,j+1,k,bi,bj)
-     $         + tmp(i-1,j+1)*maskC(i-1,j+1,k,bi,bj)
-     $         + tmp(i+1,j  )*maskC(i+1,j  ,k,bi,bj)
-     $         + tmp(i  ,j  )*maskC(i  ,j  ,k,bi,bj)
-     $         + tmp(i-1,j  )*maskC(i-1,j  ,k,bi,bj)
-     $         + tmp(i+1,j-1)*maskC(i+1,j-1,k,bi,bj)
-     $         + tmp(i  ,j-1)*maskC(i  ,j-1,k,bi,bj)
-     $         + tmp(i-1,j-1)*maskC(i-1,j-1,k,bi,bj))/
-     $         MAX(1.0, maskC(i+1,j+1,k,bi,bj)
-     $         +        maskC(i  ,j+1,k,bi,bj)
-     $         +        maskC(i-1,j+1,k,bi,bj)
-     $         +        maskC(i+1,j  ,k,bi,bj)
-     $         +        maskC(i  ,j  ,k,bi,bj)
-     $         +        maskC(i-1,j  ,k,bi,bj)
-     $         +        maskC(i+1,j-1,k,bi,bj)
-     $         +        maskC(i  ,j-1,k,bi,bj)
-     $         +        maskC(i-1,j-1,k,bi,bj))
+            mask_weight = 0.
+            psi = 0.
+            DO m=-box_filter_size,box_filter_size
+              DO l=-box_filter_size,box_filter_size
+                psi = psi + tmp(i+l,j+m)
+     $             * RBC_mask_bdy(i+l,j+m,k,bi,bj)
+                mask_weight = mask_weight 
+     $             + RBC_mask_bdy(i+l,j+m,k,bi,bj)
+              ENDDO
+            ENDDO
+            tmp2(i,j) = psi*maskC(i,j,k,bi,bj)/MAX(1.0,mask_weight)
           ENDDO
         ENDDO
 
-      DO j=1-OLy,sNy+OLy
-        DO i=1-OLx,sNx+OLx
+        DO j=1-OLy,sNy+OLy
+          DO i=1-OLx,sNx+OLx
             tmp(i,j) = tmp2(i,j)
             if (kit.EQ.RBC_filter_kiter(i,j,bi,bj)) THEN
               fieldout(i,j) = tmp2(i,j)
             ENDIF
           ENDDO
         ENDDO
-      ENDDO ! kiter loop
-
+      ENDDO                     ! kiter loop
+      
       _EXCH_XY_RL(fieldout,myThid)      
-
+      
       RETURN
       END

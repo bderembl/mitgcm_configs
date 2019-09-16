@@ -68,8 +68,9 @@ C     rbcsLdRec     :: time-record currently loaded (in temp arrays *[1])
 #endif /* ALLOW_PTRACERS */
 
       COMMON /RBCS_FILTER_R/
-     &          RBC_filter_len
+     &          RBC_filter_len, RBC_mask_bdy
       _RL RBC_filter_len(1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
+      _RL RBC_mask_bdy(1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy)
 
       COMMON /RBCS_FILTER_I/ RBC_filter_kiter, max_iter_filter
       INTEGER RBC_filter_kiter(1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
