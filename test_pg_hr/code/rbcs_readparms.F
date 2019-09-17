@@ -86,7 +86,8 @@ C--   RBCS parameters:
      &          useRBCfilter,
      &          filterlength,
      &          filterlengthFile,
-     &          box_filter_size
+     &          max_box_filter_size,
+     &          min_box_filter_size
 
 
 C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
@@ -141,7 +142,8 @@ C--   Default values
       useRBCfilter = .FALSE.
       filterlength = 0.
       filterlengthFile = ' '
-      box_filter_size = 1      
+      max_box_filter_size = 1
+      min_box_filter_size = 1
 
 C--   Open and read the data.rbcs file
 
@@ -288,9 +290,9 @@ c       ENDIF
         STOP 'ABNORMAL END: S/R RBCS_READPARMS'        
       ENDIF
       
-      IF (box_filter_size.GT.OLx.OR.box_filter_size.GT.OLy) THEN
+      IF (max_box_filter_size.GT.OLx.OR.max_box_filter_size.GT.OLy) THEN
         WRITE(msgBuf,'(3A)') 'RBCS_READPARMS: ',
-     $     'you must set box_filter_size<=OLx,OLy'
+     $     'you must set max_box_filter_size<=OLx,OLy'
         CALL PRINT_ERROR( msgBuf, myThid )
         STOP 'ABNORMAL END: S/R RBCS_READPARMS'
       ENDIF

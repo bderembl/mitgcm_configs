@@ -22,6 +22,7 @@
  implicitFreeSurface=.TRUE.,
  hFacMin=0.0,
  nonHydrostatic=.FALSE.,
+ useSingleCpuIo=.TRUE.,
  readBinaryPrec=32,
  staggerTimeStep=.TRUE.,
  tempAdvScheme=33,

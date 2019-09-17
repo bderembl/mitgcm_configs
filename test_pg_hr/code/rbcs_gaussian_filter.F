@@ -57,8 +57,8 @@ C      copy fieldout in case max_iter = -1
           DO i=1,sNx
             mask_weight = 0.
             psi = 0.
-            DO m=-box_filter_size,box_filter_size
-              DO l=-box_filter_size,box_filter_size
+            DO m=-RBC_box_size(i,j,bi,bj),RBC_box_size(i,j,bi,bj)
+              DO l=-RBC_box_size(i,j,bi,bj),RBC_box_size(i,j,bi,bj)
                 psi = psi + tmp(i+l,j+m)
      $             * RBC_mask_bdy(i+l,j+m,k,bi,bj)
                 mask_weight = mask_weight 

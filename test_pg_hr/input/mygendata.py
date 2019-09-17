@@ -351,7 +351,7 @@ N2_min = 1e-7
 N2 = np.where(N2<N2_min, N2_min, N2)
 
 gp = N2*dz2
-lmax = 250e3
+lmax = 500e3
 filt_len = np.zeros((si_y,si_x))
 for nx in range(0,si_x):
   for ny in range(0,si_y):
@@ -362,7 +362,7 @@ for nx in range(0,si_x):
 def shape(x,sigma):
   return (1-np.exp(-x**2/(2*sigma**2)))
 
-dist = Lx/12
+dist = 500e3
 filt_bdy = lmax*shape(xg,dist)*shape(xg-Lx,dist)*shape(yg,dist)*shape(yg-Lx,dist)
 filt_len = np.where(filt_len<filt_bdy, filt_len, filt_bdy)
 
