@@ -1,0 +1,9 @@
+#!sh RBCS package parameters:
+&RBCS_PARM01
+useRBCtemp=.TRUE.,
+tauRelaxT=7200.,
+relaxMaskFile(1)='rbcs_mask.box',
+relaxTFile='temp.box',
+rbcsForcingPeriod=21600.,
+rbcsForcingCycle=2678400.,
+&end

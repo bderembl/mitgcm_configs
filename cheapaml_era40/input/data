@@ -1,0 +1,64 @@
+#!sh  ====================
+# | Model parameters |
+# ====================
+#
+# Continuous equation parameters
+&PARM01
+readBinaryPrec=32,
+saltStepping=.FALSE.,
+#tempStepping=.FALSE.,
+tempadvection=.FALSE.,
+momStepping=.FALSE.,
+debugLevel=0,
+&end
+
+# Elliptic solver parameters
+&PARM02
+cg2dMaxIters=1000,
+cg2dTargetResidual=1.E-9,
+&end
+
+# Time stepping parameters
+&PARM03
+
+abEps=0.1,
+
+
+# # test flux: 1time step
+# nIter0=0,
+# deltaT=1200,
+# pChkptFreq=1200,
+# dumpFreq=1200,
+# monitorFreq=1200, 
+# Endtime=1200,
+
+nIter0=0,
+deltaT=1200,
+#30 days
+pChkptFreq=0,
+dumpFreq=21600,
+monitorFreq=86400, 
+Endtime=2678400,
+
+periodicExternalForcing=.TRUE.,
+#6 hours
+externForcingPeriod=21600,
+#600 hours
+externForcingCycle=2678400,
+&end
+
+# Grid parameters
+&PARM04
+usingSphericalPolarGrid=.TRUE.,
+ygOrigin=-85.,
+delXfile='dx.box',
+delYfile='dy.box',
+delrfile='dz.box'
+&end
+
+# Input datasets
+&PARM05
+checkIniTemp=.false.
+bathyFile='topog.box'
+hydrogThetaFile='temp.box'
+&end

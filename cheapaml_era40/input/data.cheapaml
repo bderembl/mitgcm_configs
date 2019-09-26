@@ -1,0 +1,58 @@
+#!sh  CheapAML
+&CHEAPAML_CONST
+cheapaml_ntim = 5			
+cheapaml_mask_width=0
+cheapaml_h = 1000.
+cheapaml_kdiff = 1000.
+#xphaseinit=0.0d0
+#cheap_pr1=172800.0
+#cheap_pr2=244800.0
+&end
+&CHEAPAML_PARM01
+UWindFile='windx.box'
+VWindFile='windy.box'
+SolarFile='solar.box'
+AirTempFile='tair.box'
+#same file for Tr
+TrFile='tair.box'
+AirQFile='qair.box'
+#same file for Qr
+QrFile='qair.box',
+#cheap_hfile='h_blayer.box'
+#cheap_clfile='cloud.box',
+#cheap_prfile='conv.box'
+#CheapMaskFile='cheapmask.box'
+&end
+&CHEAPAML_PARM02 
+useFreshWaterFlux=.TRUE.,
+useFluxLimit=.TRUE.,
+FluxFormula='COARE3',
+#usetimevarblh=.TRUE.,
+#useclouds=.TRUE.
+&end
+
+# C!BD       CALL WRITE_REC_3D_RL('myfi',precFloat64, 1,hfacc,1,1,myThid)
+# C!BD       stop
+
+# fields load: solar
+# local=220.d0*(sin(pi*float(jg-1)/(float(ny-1))))**2 
+# $               + 50 _d 0
+# gad_c2_2d_adv_x
+      # DO j=1-Oly,sNy+Oly
+      #   uT(1-Olx,j)=0.
+      # ENDDO
+
+#gad_diff_2d_x
+     #  DO j=1-Oly,sNy+Oly
+     #    dfx(1-Olx,j)=0.
+     #  ENDDO
+     #  DO j=1-Oly,sNy+Oly
+     #    DO i=1-Olx+1,sNx+Olx
+     #      dfx(i,j) = -diffKh
+     # &       *_recip_dxC(i,j,bi,bj)
+     # &       *(Tracer(i,j)-Tracer(i-1,j))
+     # &       *CosFacU(j,bi,bj)
+     #      iG=myXGlobalLo-1+(bi-1)*sNx+i
+     #      if(iG.eq.nx.or.iG.eq.1)dfx(i,j)=0.d0
+     #    ENDDO
+     #  ENDDO
