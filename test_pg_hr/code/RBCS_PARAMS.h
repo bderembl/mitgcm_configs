@@ -86,8 +86,7 @@ C
       LOGICAL useRBCfilter
       _RL filterlength
       CHARACTER*(MAX_LEN_FNAM) filterlengthFile
-      INTEGER max_box_filter_size
-      INTEGER min_box_filter_size
+      INTEGER box_filter_size
 
       COMMON /RBCS_PARM03_L/
      &          useRBCfilter
@@ -96,6 +95,6 @@ C
       COMMON /RBCS_PARM03_C/
      &          filterlengthFile
       COMMON /RBCS_PARM03_I/
-     &          max_box_filter_size, min_box_filter_size
+     &          box_filter_size
 
 #endif /* ALLOW_RBCS */
