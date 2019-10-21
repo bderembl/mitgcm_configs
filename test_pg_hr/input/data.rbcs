@@ -14,6 +14,6 @@
  &RBCS_PARM03
  useRBCfilter=.TRUE.,
  filterlengthFile='filter_length.box',
- max_box_filter_size=3
+ box_filter_size=3
 # filterlength=500000
  &

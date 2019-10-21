@@ -1,0 +1,8 @@
+#!sh Packages
+&PACKAGES
+useCheapAML=.TRUE.
+useMNC=.TRUE.
+useKPP=.FALSE.
+useDIAGNOSTICS=.TRUE.
+useRBCS=.TRUE.
+&end

@@ -45,7 +45,6 @@ C     msgBuf      :: Informational/error message buffer
       _RL max_iter_rl
       INTEGER l,m,min_iter
       _RL RBC_iter_rl(1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
-      _RL RBC_box_size_rl(1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
 
 C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
 C     Report RBCS mask setting
@@ -292,7 +291,6 @@ C        Initialize arrays in common blocks :
              DO i=1-OLx,sNx+OLx
                RBC_filter_len(i,j,bi,bj) = filterlength
                RBC_filter_kiter(i,j,bi,bj) = -1
-               RBC_box_size(i,j,bi,bj) = 1
                DO k=1,Nr
                  RBC_mask_bdy(i,j,k,bi,bj) = maskC(i,j,k,bi,bj)
                ENDDO
@@ -369,31 +367,19 @@ C     REF: Fast Almost-Gaussian Filtering  Peter Kovesi
       ! -> n = 12*sigma^2/(w^2 - 1)
 !     length_scale = 3*sigma
 
-         DO bj = myByLo(myThid), myByHi(myThid)
-           DO bi = myBxLo(myThid), myBxHi(myThid)
-             DO j=1-OLy,sNy+OLy
-               DO i=1-OLx,sNx+OLx
-                 DO l=min_box_filter_size,max_box_filter_size
-                   m = 
-     $                MAX(min_iter,FLOOR(12*(RBC_filter_len(i,j,bi,bj)/3
-     $              *_recip_dxC(i,j,bi,bj))**2
-     $              /((2*l+1)**2-1)))
-                 IF(m.LE.8.AND.
-     $              RBC_filter_kiter(i,j,bi,bj).EQ.-1) THEN
-                   RBC_filter_kiter(i,j,bi,bj) = m
-                   RBC_box_size(i,j,bi,bj) = l
-                 ELSEIF (l.EQ.max_box_filter_size.AND.
-     $              RBC_filter_kiter(i,j,bi,bj).EQ.-1) THEN
-                   RBC_filter_kiter(i,j,bi,bj) = m
-                   RBC_box_size(i,j,bi,bj) = l
-                 ENDIF
-               ENDDO
-               ENDDO
+       DO bj = myByLo(myThid), myByHi(myThid)
+         DO bi = myBxLo(myThid), myBxHi(myThid)
+           DO j=1-OLy,sNy+OLy
+             DO i=1-OLx,sNx+OLx
+               RBC_filter_kiter(i,j,bi,bj) = 
+     $            MAX(min_iter,FLOOR(12*(RBC_filter_len(i,j,bi,bj)/3
+     $            *_recip_dxC(i,j,bi,bj))**2
+     $            /((2*box_filter_size+1)**2-1)))
              ENDDO
-             
-C     end bi,bj loops
            ENDDO
+C     end bi,bj loops
          ENDDO
+       ENDDO
 
 !     find max iter and send it to all procs
          DO bj = myByLo(myThid), myByHi(myThid)
@@ -418,7 +404,6 @@ C!BD!         IF ( debugLevel.GE.debLevC ) THEN
                DO j=1-OLy,sNy+OLy
                  DO i=1-OLx,sNx+OLx
                    RBC_iter_rl(i,j,bi,bj) = RBC_filter_kiter(i,j,bi,bj)
-                   RBC_box_size_rl(i,j,bi,bj) = RBC_box_size(i,j,bi,bj)
                  ENDDO
                ENDDO
              ENDDO
@@ -426,9 +411,6 @@ C!BD!         IF ( debugLevel.GE.debLevC ) THEN
            WRITE(filName,'(A)') 'RBC_flt_iter'
            CALL WRITE_FLD_XY_RS( filName,' ',
      &                RBC_iter_rl(1-OLx,1-OLy,1,1), 0, myThid )
-           WRITE(filName,'(A)') 'RBC_box_size'
-           CALL WRITE_FLD_XY_RS( filName,' ',
-     &                RBC_box_size_rl(1-OLx,1-OLy,1,1), 0, myThid )
 !         ENDIF
 
 
