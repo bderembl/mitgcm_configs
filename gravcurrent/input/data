@@ -14,7 +14,8 @@
  diffKzS=1.0E-6,
  f0=0.0,
  eosType='LINEAR',
- sBeta =7.4e-4,
+ sBeta=7.4e-4,
+ sRefFile='sref.box'
  saltAdvScheme=33,
  rigidLid=.FALSE.,
  implicitFreeSurface=.TRUE.,

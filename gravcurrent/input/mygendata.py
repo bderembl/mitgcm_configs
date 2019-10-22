@@ -16,7 +16,7 @@ S0 = 0.0       # salinity of the light water
 S1 = 5.0      # salinity of the dense water
 gg = 9.81      # gravity
 
-Lx1 = 0.30    # length of the dense water compartment
+Lx1 = 0.10    # length of the dense water compartment
 
 # ========== grid =========
 
@@ -53,11 +53,15 @@ dz1.astype(binprec).tofile('dz.box')
 # ============= topography =============
 
 h_mit = -H + np.zeros((si_y,si_x))
-h_mit[:,0] = 0
+h_mit[:,-1] = 0
 
 h_mit.astype(binprec).tofile('topo.box')
 
+# ========= reference profile ==========
 
+sref = S0 + np.zeros(si_z) 
+
+sref.astype(binprec).tofile('sref.box')
 
 # ========= initial conditions ==========
 
@@ -68,4 +72,5 @@ for k in range(0,si_z):
 
 
 sinit.astype(binprec).tofile('sinit.box')
+
 
