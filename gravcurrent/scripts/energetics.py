@@ -4,20 +4,27 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io.netcdf as netcdf
+import f90nml
 
 plt.ion()
 
-dir0 = '../run/mnc_test_'
+dir0 = '../run/'
 file1 = 'state.0000000000.t001.nc'
 
 if len(sys.argv) > 1:
-  dir0 = dir0 + str(format(sys.argv[1])).zfill(4) + '/'
+  dir1 = dir0 + 'mnc_test_' + str(format(sys.argv[1])).zfill(4) + '/'
 
 # physical parameters
 gg = 9.81       # m/s^2
 sbeta = 7.4e-4  # psu^-1
 
-f1 = netcdf.netcdf_file(dir0 + file1,'r')
+nml = f90nml.read(dir0+'data')
+nmldiag = f90nml.read(dir0+'data.diagnostics')
+
+dt = nml['parm03']['dumpfreq']
+
+
+f1 = netcdf.netcdf_file(dir1 + file1,'r')
 
 tt = f1.variables['T'][:].copy()
 xx = f1.variables['X'][:].copy()

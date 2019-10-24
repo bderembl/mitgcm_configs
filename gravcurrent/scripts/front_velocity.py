@@ -37,6 +37,9 @@ s0 = s[0,-1,-1] # fresh water
 ipos = si_x - np.argmax(s[0,-1,::-1])
 L0 = xx[ipos]
 H0 = -zz[-1] - zz[0]
+Lt = xx[-1] - xx[0]
+dx = xx[1] - xx[0] # assume uniform grid
+dz = zz[0] - zz[1] # assume uniform grid
 gp = gg*sbeta*(s1-s0)
 uref = np.sqrt(gp*H0)
 tref = L0/uref
@@ -75,14 +78,21 @@ uf3 = np.diff(xf2)/dtu[:imax-1]
 # max velocity near the ground
 umax = u[:,-1,:].max(axis=1)
 
-plt.figure()
+#volume 
+vol = s_bin.sum((1,2))*dx*dz
+
+#plt.figure()
 #plt.loglog(tu,uf) 
 plt.loglog(tt[1:imax]/tref,uf2[1:]/uref,'r',label='max velocity') 
 plt.loglog(tu[1:imax]/tref,uf3[1:]/uref,'k',label='front velocity') 
 plt.loglog(tt[1:imax]/tref,umax[1:imax]/uref,'g',label='max velocity') 
 
-plt.loglog(tu[2:]/tref,uf3[-1]/uref*(tu[2:]/tu[-1])**-(1/3),'k--',label='t^-1/3')
+plt.loglog(tu[2:]/tref,uf3[-1]/uref*(tu[2:]/tu[-1])**-(1/3),'k--',label='-1/3')
 plt.xlabel('time')
 plt.ylabel('velocity')
 plt.legend()
 
+# #volume
+# plt.figure()
+# plt.loglog(tt[1:imax]/tref,vol[1:imax]/(L0*H0),'r',label='volume') 
+# plt.loglog(tt[1:imax]/tref,(tt[1:imax]/tref)**(4/3),'k--',label='t^4/3')

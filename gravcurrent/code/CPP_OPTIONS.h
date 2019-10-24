@@ -5,6 +5,7 @@ C $Name: checkpoint65i $
 #define CPP_OPTIONS_H
 
 C CPP flags controlling particular source code features
+#define ALLOW_EDIAG
 
 C o Shortwave heating as extra term in external_forcing.F
 C Note: this should be a run-time option

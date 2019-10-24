@@ -1,4 +1,5 @@
-# Packages
+#!sh Packages
  &PACKAGES
  useMNC=.TRUE.,
+ useDIAGNOSTICS=.FALSE.,
  &
