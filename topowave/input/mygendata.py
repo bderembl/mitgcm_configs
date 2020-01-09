@@ -68,9 +68,10 @@ zc,zf,dz1 = stretch(xfz,yfz,Lz,si_z,1)
 # # yf is % of thickness
 # yf = [0, 0.4, 0.6, 1]
 
+x_m = 0 # position of the mountain on a rescaled axe [-1,1]
 slope = 3
 xf = np.linspace(-1,1,2000)
-yf = (np.sinh(slope*xf) + np.sinh(slope))/(2*np.sinh(slope))
+yf = (np.sinh(slope*(xf-x_m)) - np.sinh(slope*(-1-x_m)))/(np.sinh(slope*(1-x_m)) - np.sinh(slope*(-1-x_m)))
 xf = (xf + 1)/2
 
 xx,xx1,dx1 = stretch(xf,yf,Lx,si_x,0)
