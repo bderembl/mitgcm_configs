@@ -16,6 +16,8 @@ CEOP
 C CPP flags controlling particular source code features
 
 C-- Forcing code options:
+C diagnose energy diagnostics (testing branch)
+#define ALLOW_EDIAG
 
 C o Shortwave heating as extra term in external_forcing.F
 C Note: this should be a run-time option

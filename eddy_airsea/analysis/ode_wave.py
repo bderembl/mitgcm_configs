@@ -7,9 +7,9 @@ import scipy.integrate as integrate
 plt.ion()
 
 f0 = 1e-4
-u0 = 0.5
+u0 = 1.0
 R0 = 40e3      # radius
-vmax = 0.5     # m/s
+vmax = -1.0     # m/s
 
 
 
@@ -28,7 +28,7 @@ def f(r, t):
   return u0*np.sin(omega*t)
 
 si_r = 30
-si_t = 100000
+si_t = 30000
 r0 = np.linspace(1,5*R0,si_r)
 t = np.linspace(0, si_t/f0/1000, si_t)
 ra = np.zeros((si_t,si_r))
@@ -37,5 +37,10 @@ for ni in range(0,si_r):
 
 plt.figure()
 plt.plot(t*f0/(2*np.pi),ra/R0,'k',linewidth=1)
-plt.xlabel('t*f/2pi')
-plt.ylabel('r/R0')
+plt.xlabel(r'$tf/2\pi$')
+plt.ylabel(r'$r_p/R_0$')
+
+plt.xlim([np.min(t*f0/(2*np.pi)), np.max(t*f0/(2*np.pi))])
+plt.ylim([np.min(ra/R0), 1.05*np.max(ra/R0)])
+
+plt.savefig("ode_k0.pdf",bbox_inches='tight')
