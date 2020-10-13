@@ -22,6 +22,8 @@
  nonHydrostatic=.FALSE.,
  tempStepping=.FALSE.,
  saltStepping=.FALSE.,
+ vectorInvariantMomentum=.TRUE.,
+ useStrainTensionVisc=.TRUE.,
  readBinaryPrec=32,
  &
 
@@ -42,7 +44,7 @@
  pChkptFreq=0.0,
  dumpFreq=5.0,
  monitorSelect=2,
- monitorFreq=180,
+ monitorFreq=5,
  &
 
 # Gridding parameters
