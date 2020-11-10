@@ -1,3 +1,4 @@
+#  -*-sh-*-
 # binary files
 *.box
 *.npy
