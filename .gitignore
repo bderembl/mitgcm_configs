@@ -1,6 +1,16 @@
 # binary files
 *.box
+*.npy
+*.bas
 
 # build and run directories
 */build/*
-*/run/*
+*/run*
+
+# python files
+*__pycache__*
+
+# specific files
+natl_square/code/SIZE.h
+natl_square/input/data
+
