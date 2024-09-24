@@ -1,0 +1,78 @@
+#!/bin/sh ====================
+# | Model parameters |
+# ====================
+#
+# Continuous equation parameters
+ &PARM01
+ viscA4=MYVISCA4,
+ viscAz=MYVISCAZ,
+ diffK4T=MYDIFFK4T,
+ diffKzT=MYDIFFKZT,
+ no_slip_sides=.TRUE.,
+ no_slip_bottom=.TRUE.,
+ bottomDragLinear=MYBOTTOMDRAGLINEAR,
+# corimap = 0 -> fplane
+ f0=MYF0,
+ beta=MYBETA,
+ eosType='LINEAR',
+ tAlpha=2.E-4,
+ sBeta =0.E-4,
+ rigidLid=.FALSE.,
+ implicitFreeSurface=.TRUE.,
+ hFacMin=0.2,
+ useSingleCpuIo=.TRUE.,
+ readBinaryPrec=32,
+ staggerTimeStep=.TRUE.,
+ tempAdvScheme=33,
+ implicitDiffusion=.TRUE.,
+ implicitviscosity=.TRUE.,
+ useJamartWetPoints=.TRUE.,
+ useEnergyConservingCoriolis=.TRUE.,
+ saltStepping=.FALSE.,
+ tempStepping=.TRUE.,
+ momAdvection=.TRUE.,
+ &
+
+# Elliptic solver parameters
+ &PARM02
+ cg2dMaxIters=1000,
+ cg2dTargetResidual=1.E-12,
+ cg3dMaxIters=1000,
+ cg3dTargetResidual=1.E-12,
+ &
+
+# Time stepping parameters
+ &PARM03
+ nIter0=0,
+ endTime=MYENDTIME,
+ deltaT=MYDELTAT,
+ abEps=0.01,
+ pChkptFreq=0.0,
+ chkptFreq=0.0,
+ dumpFreq=MYDUMPFREQ,
+ taveFreq=0,
+ monitorSelect=2,
+ monitorFreq=2592000.,
+ tauThetaClimRelax=MYTAUTHETACLIMRELAX,
+ &
+
+# Gridding parameters
+ &PARM04
+ usingCartesianGrid=.TRUE.,
+ delXfile='dx.box',
+ delYfile='dy.box',
+ delRFile='dz.box',
+ &
+ 
+# Input datasets
+ &PARM05
+ bathyFile='topog.box',
+ hydrogThetaFile='tinit.box',
+ uVelInitFile='uinit.box',
+ vVelInitFile='vinit.box',
+ pSurfInitFile='einit.box',
+ zonalwindfile='windx.box',
+ thetaClimFile='sstclim.box'
+# surfQfile='Qnet.forcing',
+checkIniTemp=.FALSE.
+ &
