@@ -179,7 +179,7 @@ Ek = de/Lz
 taubottom = dz1[-1]/bottomDragLinear
 
 print("Nb grid points: {0}x{1}x{2}".format(si_x,si_y,si_z))
-print("npx = {0}, npy = {1}".format(npx npy))
+print("npx = {0}, npy = {1}".format(npx, npy))
 print("qwatt = {0} W/m2/K".format(qwatt))
 print("taurelax_sst = {0} days".format(tauThetaClimRelax/86400))
 print("taubottom = {0} days".format(taubottom/86400))
