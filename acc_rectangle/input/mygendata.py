@@ -52,10 +52,10 @@ npx = int(max(si_x/64,1))
 npy = int(max(si_y/64,1))
 
 #viscosity
-Uv_ref = 0.2     #  lateral viscous velocity [m/s]
+Uv_ref = 1.0     #  lateral viscous velocity [m/s]
 Lv_ref = Lx/si_x #  lateral viscous length   [m] 
 
-nu4 = 1./12*Uv_ref*Lv_ref**3
+nu4 = 2e-2*Uv_ref*Lv_ref**3
 nuz = 2e-4*min(32/si_x,1) + 1e-5
 
 # time stepping
