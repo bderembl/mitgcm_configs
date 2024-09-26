@@ -122,7 +122,7 @@ if si_xn != si_x:
     theta_t[nz,:,:] = fint((yng,xng))
   
   fint = RegularGridInterpolator((yy, xx),eta, method='linear')
-  eta_n = fint((yng,yng))
+  eta_n = fint((yng,xng))
   
   uvel_n  = np.zeros((si_zn,si_yn,si_xn))
   vvel_n  = np.zeros((si_zn,si_yn,si_xn))
