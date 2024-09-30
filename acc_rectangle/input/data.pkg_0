@@ -2,5 +2,6 @@
  &PACKAGES
  useMNC=.TRUE.,
  useKPP=.TRUE.,
+ useEXF=MYUSEEXF,
  useDIAGNOSTICS=.FALSE.,
  &

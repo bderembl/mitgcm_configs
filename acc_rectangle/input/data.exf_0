@@ -1,0 +1,20 @@
+#!/usr/bin/bash 
+# EXF Package
+
+ &EXF_NML_01
+ useRelativeWind=MYUSERELATIVEWIND,
+ cdrag_1=0.0,
+ cdrag_2=MYCDRAG,
+ cdrag_3=0.0,
+ &
+
+ &EXF_NML_02
+ climsstTauRelax=MYTAUTHETACLIMRELAX,
+ uwindfile='windvelx.box',
+ climsstfile='sstclim.box',
+ &
+
+ &EXF_NML_03
+ &
+
+

@@ -17,7 +17,9 @@ else:
 gg = 9.8      # gravity [m/s^2]
 alphaT = 2e-4 # thermal expansion coef [1/K]
 rho0 = 1000.0 # reference density [kg/m^3]
+rhoa = 1.2    # atmos reference density [kg/m^3]
 Cp   = 4000.0 # heat capacity [J/kg/K]
+
 
 # ==== physical parameters
 fmid = -1.11e-4 # Coriolis parameter at southern edge [1/s]
@@ -28,6 +30,9 @@ TS = 0.0    # southern boundary temperature relaxation [K]
 qwatt = 40   # surface forcing [W/m2/K]
 bottomDragLinear = 1.1e-3 # bottom drag [m/s]
 maxdt = 1800 # upper bound for time step [s]
+Cdrag = 1e-3 #atmospheric drag coef (nondimensional)
+useEXF = 1
+useRelativeWind = 1
 
 # domain size 
 Lx = 9600.0e3 # zonal length [m]
@@ -147,8 +152,10 @@ sst.astype(binprec).tofile('sstclim.box')
 
 # -- wind -- 
 windx = tauW/2*(1. + np.cos((2*np.pi*(yg-0.5*dx - 0.5*Ly)/(Ly-dx))))
+windvelx = np.sqrt(tauW/rhoa/Cdrag/2*(1. + np.cos((2*np.pi*(yg-0.5*dx - 0.5*Ly)/(Ly-dx)))))
 
 windx.astype(binprec).tofile('windx.box')
+windvelx.astype(binprec).tofile('windvelx.box')
 
 #%=============== initial conditions ===================================
 
@@ -204,7 +211,10 @@ with open("data", "w") as sources:
     for line in lines:
       line2 = re.sub(r'MYDELTAT', str(deltat), line)
       line2 = re.sub(r'MYENDTIME', str(endtime), line2)
-      line2 = re.sub(r'MYTAUTHETACLIMRELAX', str(tauThetaClimRelax), line2)
+      if useEXF:
+        line2 = re.sub(r'MYTAUTHETACLIMRELAX', str(0.0), line2)
+      else:
+        line2 = re.sub(r'MYTAUTHETACLIMRELAX', str(tauThetaClimRelax), line2)
       line2 = re.sub(r'MYDUMPFREQ', str(dumpfreq), line2)
       line2 = re.sub(r'MYVISCA4', str(nu4), line2)
       line2 = re.sub(r'MYVISCAZ', str(nuz), line2)
@@ -213,4 +223,26 @@ with open("data", "w") as sources:
       line2 = re.sub(r'MYBETA', str(beta), line2)
       line2 = re.sub(r'MYF0', str(fmid - beta*Ly/2), line2)
       line2 = re.sub(r'MYBOTTOMDRAGLINEAR', str(bottomDragLinear), line2)
+      sources.write(line2)
+
+with open("data.exf_0", "r") as sources:
+    lines = sources.readlines()
+with open("data.exf", "w") as sources:
+    for line in lines:
+      line2 = re.sub(r'MYCDRAG', str(Cdrag), line)
+      if (useRelativeWind):
+        line2 = re.sub(r'MYUSERELATIVEWIND', '.TRUE.', line2)
+      else:
+        line2 = re.sub(r'MYUSERELATIVEWIND', '.FALSE.', line2)
+      line2 = re.sub(r'MYTAUTHETACLIMRELAX', str(tauThetaClimRelax), line2)
+      sources.write(line2)
+
+with open("data.pkg_0", "r") as sources:
+    lines = sources.readlines()
+with open("data.pkg", "w") as sources:
+    for line in lines:
+      if (useEXF):
+        line2 = re.sub(r'MYUSEEXF', '.TRUE.', line)
+      else:
+        line2 = re.sub(r'MYUSEEXF', '.FALSE.', line)
       sources.write(line2)
