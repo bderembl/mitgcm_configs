@@ -189,7 +189,10 @@ print("Nb grid points: {0}x{1}x{2}".format(si_x,si_y,si_z))
 print("npx = {0}, npy = {1}".format(npx, npy))
 print("qwatt = {0} W/m2/K".format(qwatt))
 print("taurelax_sst = {0} days".format(tauThetaClimRelax/86400))
-print("taubottom = {0} days".format(taubottom/86400))
+if (useRelativeWind):
+  print("using Relative Wind: no bottom friction")
+else:
+  print("taubottom = {0} days".format(taubottom/86400))
 
 
 #=================== Write data files  =====================
@@ -222,7 +225,11 @@ with open("data", "w") as sources:
       line2 = re.sub(r'MYDIFFKZT', str(nuz), line2)
       line2 = re.sub(r'MYBETA', str(beta), line2)
       line2 = re.sub(r'MYF0', str(fmid - beta*Ly/2), line2)
-      line2 = re.sub(r'MYBOTTOMDRAGLINEAR', str(bottomDragLinear), line2)
+      if (useRelativeWind):
+        line2 = re.sub(r'MYBOTTOMDRAGLINEAR', str(0.0), line2)
+      else:
+        line2 = re.sub(r'MYBOTTOMDRAGLINEAR', str(bottomDragLinear), line2)
+
       sources.write(line2)
 
 with open("data.exf_0", "r") as sources:
