@@ -37,7 +37,7 @@ useRelativeWind = 1
 # domain size 
 Lx = 9600.0e3 # zonal length [m]
 Ly = 2400.0e3 # meridional length [m]
-Lz = 3000.0   # depth [m]
+Lz = 3500.0   # depth [m]
 
 # vertical grid stretching parameter
 stretch_coef = 4
@@ -45,6 +45,12 @@ stretch_coef = 4
 # topography
 wtopo   = 250e3  # width of the topography [m]
 topomax = 1500    # maxheight of the topography [m]
+
+# rough topography
+h_rough_rms = 250  # topography std  [m]
+l1_rough = 100e3 # first wave length [m]
+l2_rough = 300e3 # second wave length [m]
+
 
 # ==== derived quantities: 
 # number of grid points in x,y,z direction
@@ -134,6 +140,24 @@ def shelf(x,d):
   return (1-np.exp(-x**2/(2*d**2)))
 
 topo = -Lz + topomax*(1-shelf(xg-Lx/2,wtopo))
+
+# create random topo
+kx = np.fft.fftshift(np.fft.fftfreq(si_x,dx))
+ky = np.fft.fftshift(np.fft.fftfreq(si_y,dy))
+k,l = np.meshgrid(kx,ky)
+K = np.sqrt(k**2 + l**2)
+
+k_topo1 = 1./(2*l1_rough)
+k_topo2 = 1./(2*l2_rough)
+K_mask = np.where(K<k_topo2,0, K)
+K_mask = np.where(K_mask>k_topo1,0, 1)
+
+rough_topo_hat = np.random.rand(si_y,si_x)*np.exp(1j*2*np.pi*np.random.rand(si_y,si_x))
+rough_topo_hat *= K_mask
+rough_topo = np.fft.fft2(np.fft.ifftshift(rough_topo_hat)).real
+rough_topo = h_rough_rms*rough_topo/np.std(2*rough_topo)
+
+topo = topo + rough_topo + 2*h_rough_rms
 
 # southern wall
 topo[0,:] = 0.0
