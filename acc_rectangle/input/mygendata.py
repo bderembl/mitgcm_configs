@@ -152,6 +152,7 @@ k_topo2 = 1./(2*l2_rough)
 K_mask = np.where(K<k_topo2,0, K)
 K_mask = np.where(K_mask>k_topo1,0, 1)
 
+np.random.seed(1000) # random seed to aways get the same topography
 rough_topo_hat = np.random.rand(si_y,si_x)*np.exp(1j*2*np.pi*np.random.rand(si_y,si_x))
 rough_topo_hat *= K_mask
 rough_topo = np.fft.fft2(np.fft.ifftshift(rough_topo_hat)).real
